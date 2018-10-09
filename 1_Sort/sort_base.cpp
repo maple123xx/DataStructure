@@ -59,3 +59,52 @@ void Bubble_sort(int A[], int n) {
 		}
 	}
 }
+
+//希尔排序
+//希尔排序就是直接插入排序的高级版，将数组按增量分组，然后分别做直接插入排序，逐渐缩小增量
+void Shell_sort(int A[], int n) {
+	int i, j, temp,increment=n;
+	/*do {
+		increment = increment / 3 + 1;
+		for (i = increment; i < n; ++i) {
+			temp = A[i];
+			for (j = i; j >= increment && A[j - increment]>temp; j -= increment) {	//这里的判断条件和直接插入排序有点区别，是>=,不然一次循环也进不去
+				A[j] = A[j - increment];
+			}
+			A[j] = temp;
+		}
+	} while (increment > 1);*/
+	do {	//与直接插入排序一样，希尔排序也有两种排序方法
+		increment = increment / 3 + 1;
+		for (i = increment; i < n; ++i) {
+			for (j = i; j >= increment; j -= increment) {	
+				if (A[j] < A[j - increment]) {
+					swap(A[j], A[j - increment]);
+				}
+			}
+		}
+	} while (increment > 1);
+}
+
+//快速排序
+//对冒泡排序的一种改进
+void Quick_sort(int A[], int left,int right) {
+	int i = left, j = right;
+	if (left>=right)//！！！非常重要，递归的终止条件
+		return;
+	int temp = A[left];	//基准
+	while (i != j) {
+		while (temp <= A[j] && i < j)//从右往左，找到第一个小于基准的数的位置j（必须要先从右往左,因为基准设为最左边，如果i先往右走，可能会挡住j
+									//（有i<j这个条件束缚着），使得j没有到达应该到的位置（第一个小于temp的位置）。
+									//所以需要j先从右往左走，来控制i）
+			--j;					
+		while (temp >= A[i] && i < j)//从左往右，找到第一个大于基准的数的位置i
+			++i;
+		swap(A[i], A[j]);
+	}
+	A[left] = A[i];
+	A[i] = temp;//现在i的位置就是基准应该在的位置，左边的都比基准小，右边的都比基准大
+	Quick_sort(A, left, i - 1);
+	Quick_sort(A, i + 1, right);
+
+}
