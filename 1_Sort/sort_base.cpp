@@ -2,6 +2,11 @@
 #include<iostream>
 #include<algorithm>
 using namespace std;
+//void swap(int &a, int &b) {	//不用自己写swap
+//	int temp = a;
+//	a = b;
+//	b=temp;
+//}
 
 //直接插入排序，或者叫交换排序
 void Insert_direct_sort(int A[], int n) {
@@ -42,8 +47,15 @@ void Select_sort(int A[], int n) {
 		swap(A[k], A[i]);//把最小值放在i的位置
 	}
 }
-//void swap(int &a, int &b) {
-//	int temp = a;
-//	a = b;
-//	b=temp;
-//}
+
+//冒泡排序
+void Bubble_sort(int A[], int n) {
+	int i, j;
+	for (i = 0; i < n - 1; ++i) {//一轮有一个最小的元素冒到最上面
+		for (j = n - 1; j > i; --j) {
+			if (A[j] < A[j - 1]) {
+				swap(A[j], A[j - 1]);
+			}
+		}
+	}
+}
