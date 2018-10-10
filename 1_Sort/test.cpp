@@ -10,13 +10,15 @@ int main() {
 	clock_t finish;
 	start = clock();
 
-	int i, n = 5;
-	int A[N_array] = { 5,4,3,2,1};
+	int i, n = 13;
+	int A[N_array] = { 45,21,35,23,4,56,78,13,15,32,11,-1,100};
 	//Select_sort(A, n);
 	//Insert_direct_sort(A, n);
 	//Shell_sort(A, n);
 	//Bubble_sort(A, n);
-	Quick_sort(A, 0, n - 1);
+	//Quick_sort(A, 0, n - 1);
+	//Heap_sort(A, n);
+	Merge_sort(A, 0, n - 1);
 	for (i = 0; i < n; i++) {
 		cout << A[i] << "\t";
 	}
