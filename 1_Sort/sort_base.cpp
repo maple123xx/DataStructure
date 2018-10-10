@@ -152,7 +152,6 @@ void AdjustHeap(int A[], int i, int n) {//
 //利用递归，将原始序列不断两两分块，知道每块剩下一个元素，这个元素肯定是有序的。然后利用递归的原理合并即可
 void Merge_sort(int A[], int low, int high) {
 	if (low < high) {//重要，递归终止条件
-		int B[N_array];
 		int mid = (low + high) / 2;
 		Merge_sort(A, low, mid);
 		Merge_sort(A, mid + 1, high);
