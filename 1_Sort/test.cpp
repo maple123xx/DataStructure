@@ -1,7 +1,6 @@
 #include<iostream>
 #include"time.h"
 #include"sort_base.h"
-#include"time.h"
 #define N_array 100
 using namespace std;
 int main() {
