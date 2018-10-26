@@ -78,6 +78,7 @@ int main() {
 	PushStack(s, 4);
 	PushStack(s, 5);
 	PushStack(s, 6);
+	PushStack(s, 7);
 	ss = TopStack(s);
 	cout << "Õ»¶¥Îª" << ss << endl;
 	PopStack(s,&i);
