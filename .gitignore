@@ -1,5 +1,6 @@
 *.db
 Debug/*
 */Debug/*
+*/x64/*
 .vs/*
 *.opendb
