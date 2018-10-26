@@ -7,8 +7,8 @@ int main() {
 	int pos, value;
 	PNODE p = CreateList();
 	print(p);
-	/*DestroyList(p);
-	ClearList(p);*/
+	DestroyList(p);
+	ClearList(p);
 	/*printf("The length of the list is: %d\n", LengthList(p));
 	printf("Please input pos that you want to find:");
 	scanf_s("%d", &pos);
@@ -20,10 +20,10 @@ int main() {
 	printf("Please input pos what you want delete:");
 	scanf_s("%d", &pos);
 	DeleteList(p, pos);
-	print(p);*/
-	SortList(p);
-	printf("The sorted list is: \n");
 	print(p);
+	SortList(p);
+	printf("The sorted list is: \n");*/
+	//print(p);
 
 
 	system("pause");

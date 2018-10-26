@@ -40,14 +40,25 @@ PNODE CreateList() {	//PNODE是指针类型,PNODE等价于NODE *
 void DestroyList(PNODE pHead) {
 	if (pHead == NULL)
 		return;
-	PNODE p = NULL;
-	printf("\n输出值后销毁链表\n");
-	while (pHead != NULL)
-	{	
-		printf("%d\t", pHead->data);
-		p = pHead->next;//先保存下一个节点
-		free(pHead);
-		pHead = p;
+	//PNODE p = NULL;
+	//printf("输出值后销毁链表\n");
+	//while (pHead != NULL)
+	//{	
+	//	p = pHead->next;//先保存下一个节点
+	//	if (p == NULL)//当pHead指向最后一个节点，p指向NULL的时候，要判断一下，不然出错
+	//		break;
+	//	printf("%d\t", p->data);
+	//	free(pHead);//pHead是一个指针，free它指向的内存
+	//	pHead = p;
+	//}
+	PNODE pre = pHead;
+	pHead = pre->next;
+	free(pre);
+	while (pHead) {
+		cout << pHead->data << '\t';
+		pre = pHead;
+		pHead = pHead->next;
+		free(pre);
 	}
 }
 
@@ -143,4 +154,12 @@ void print(PNODE pHead) {
 		p = p->next;
 	}
 	printf("\n");
+}
+
+void InsertFrontList(PNODE pos, int x) {
+	PNODE temp = (PNODE)malloc(sizeof(NODE));
+	temp->data = pos->data;
+	temp->next = pos->next;
+	pos->next = temp;
+	pos->data = x;
 }

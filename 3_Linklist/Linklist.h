@@ -15,5 +15,6 @@ int DeleteList(PNODE pHead, int pos);//删除pos位置的元素
 int LengthList(PNODE pHead);//求链表长度
 void SortList(PNODE pHead);//对链表中的节点按值升序排序，用简单的选择排序
 void print(PNODE pHead);//顺序打印链表
+void InsertFrontList(PNODE pos, int x);// 在无头单链表的一个非头节点前插入一个节点
 
 #endif // !Linklist

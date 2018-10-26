@@ -9,8 +9,8 @@ int main() {
 	clock_t finish;
 	start = clock();
 
-	int i, n = 11;
-	int A[N_array] = { 45,21,35,23,4,56,15,32,11,-1,100};
+	int i, n = 12;
+	int A[N_array] = { 45,21,35,23,4,56,15,32,11,-1,100,1};
 	//Select_sort(A, n);
 	//Insert_direct_sort(A, n);
 	//Shell_sort(A, n);
