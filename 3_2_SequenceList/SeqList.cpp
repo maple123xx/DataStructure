@@ -83,6 +83,7 @@ void PrintList(PSeqList s)
 	}
 	printf("\n");
 }
+
 int DeleteMin(PSeqList s) {//删除表中最有最小值的元素（假设唯一），空出的位置由最后一个元素填补
 	int min = s->data[0];
 	int k = 0;
@@ -142,23 +143,127 @@ void Delete_p_q2(PSeqList s, int p, int q) {//删除顺序表（不是有序的）中值为p,q(
 	}
 	s->length -= k;
 }
+void DeleteRepeat(PSeqList s) {//删除有序表的全部重复元素，使表中所有元素不同
+	int i, j;//i指向第一个不重复的元素，j工作指针
+	for (i = 0, j = 1; j < s->length;++j) {//使用直接插入的方法，初始时将第一个元素看出非重复的有序表，之后依次判断
+		if (s->data[i] != s->data[j])	   //后面的元素是否与前面非重复的有序表相同，如果相同继续向后判断，不同就插入
+			s->data[++i] = s->data[j];	
+	}
+	s->length = i + 1;
+}
+void Merge(PSeqList a, PSeqList b, PSeqList c) {//将两个有序表合并为一个
+	int i = 0, j = 0, k = 0;
+	while (i < a->length && j < b->length)
+		if (a->data[i] < b->data[j])
+			c->data[k++] = a->data[i++];
+		else
+			c->data[k++] = b->data[j++];
+	while(i<a->length)
+		c->data[k++] = a->data[i++];
+	while (j<b->length)
+		c->data[k++] = b->data[j++];
+	c->length = k;
+}
+void ReverseList2(PSeqList s, int low, int high) {
+	for (int i = low, j = high - 1; i < j; ++i, --j)
+		swap(s->data[i], s->data[j]);
+}
+void ExchangeList(PSeqList s, int m, int n) {//一维数组A[m+n]存放两个顺序表(a1...am),(b1...bm),将数组逆置为
+	ReverseList2(s, 0, m);					 //(b1...bm)，(a1...am)
+	ReverseList2(s, m, n);
+	ReverseList2(s, 0, n);
+}
+void FindX(PSeqList s,int x) {//查找有序表是否有x,有的话与其后元素交换，没有的话插入
+	int low = 0, high = s->length - 1,mid;
+	int i;
+	while (low <= high) {
+		mid = (low + high) / 2;
+		if (s->data[mid] == x)
+			break;
+		else if (s->data[mid] < x)
+			low = mid + 1;
+		else
+			high = mid - 1;
+	}
+	if (s->data[mid] == x && mid != s->length - 1)//找到了且不是最后一个元素
+		swap(s->data[mid], s->data[mid + 1]);
+	if (low > high) {
+		for (i = s->length - 1; i > high; --i)
+			s->data[i + 1] = s->data[i];
+		s->data[i + 1] = x;
+		s->length++;
+	}
+
+}
+int M_Search(int a[], int b[], int n) {//两个升序数组，合并后返回
+	int s1 = 0, d1 = n - 1, m1, s2 = 0, d2 = n - 1, m2;
+	while (s1 != d1 || s2 != d2) {
+		m1 = (s1 + d1) / 2;
+		m2 = (s2 + d2) / 2;
+		if (a[m1] == b[m2])
+			return a[m1];
+		else if (a[m1] < b[m2]) {
+			if ((s1+d1) % 2 == 0) {//元素个数为奇数
+				s1 = m1;
+				d2 = m2;
+				
+			}
+			else
+			{
+				s1 = m1 + 1;
+				d2 = m2;
+			}
+		}
+		else
+		{
+			if ((s2+d2) % 2 == 0) {//元素个数为奇数
+				d1 = m1;
+				s2 = m2;
+			}
+			else
+			{
+				d1 = m1;
+				s2 = m2 + 1;
+			}
+		}
+	}
+	return a[s1] < b[s2] ? a[s1] : b[s2];
+}
+int Majority(int a[], int n) {//找到主元素（个数大于一半）返回，没找到返回-1
+	int c = a[0], count = 1;
+	int i;
+	for (i = 1; i < n; ++i) {
+		if (c == a[i])
+			++count;
+		else if (count > 0)
+			--count;
+		else {
+			c = a[i];
+			count = 1;
+		}
+	}
+	if (count > 0)
+		return c;
+	else
+		return -1;
+}
 
 int main() {
-	SeqList s;
-	int e;
-	InitList(&s);
-	//在表中插入元素
-	printf("依次在表中插入元素：\n");
-	InsertList(&s, 1, 3);
-	InsertList(&s, 2, 2);
-	InsertList(&s, 3, 3);
-	InsertList(&s, 4, 4);
-	InsertList(&s, 5, 11);
-	InsertList(&s, 6, 4);
-	InsertList(&s, 7, 7);
-	//打印表中元素
-	printf("表中元素有：\n");
-	PrintList(&s);
+	//SeqList s;
+	//int e;
+	//InitList(&s);
+	////在表中插入元素
+	//printf("依次在表中插入元素：\n");
+	//InsertList(&s, 1, 1);
+	//InsertList(&s, 2, 2);
+	//InsertList(&s, 3, 2);
+	//InsertList(&s, 4, 2);
+	//InsertList(&s, 5, 3);
+	//InsertList(&s, 6, 3);
+	//InsertList(&s, 7, 7);
+	////打印表中元素
+	//printf("表中元素有：\n");
+	//PrintList(&s);
 	//e = DeleteList(&s, 6, &e);
 	//cout << "删除的元素为：" << e << endl;
 	//PrintList(&s);
@@ -168,8 +273,61 @@ int main() {
 	cout << "删除的最小元素为："<<e << endl;*/
 	//ReverseList(&s);
 	//DeleteX(&s, 54);
-	Delete_p_q2(&s, 3,6);
+	//Delete_p_q2(&s, 3,6);
+	//DeleteRepeat(&s);
+	//PrintList(&s);
+	/*SeqList a, b,c;
+	InitList(&a);
+	InitList(&b);
+	InitList(&c);
+	InsertList(&a, 1, 1);
+	InsertList(&a, 2, 2);
+	InsertList(&a, 3, 5);
+	InsertList(&a, 4, 7);
+	InsertList(&a, 5, 10);
+	InsertList(&a, 6, 11);
+
+	InsertList(&b, 1, 1);
+	InsertList(&b, 2, 4);
+	InsertList(&b, 3, 6);
+	InsertList(&b, 4, 10);
+	InsertList(&b, 5, 10);
+	InsertList(&b, 6, 12);
+	Merge(&a, &b, &c);
+	PrintList(&c);*/
+	/*SeqList s;
+	InitList(&s);
+	InsertList(&s, 1, 1);
+	InsertList(&s, 2, 3);
+	InsertList(&s, 3, 5);
+	InsertList(&s, 4, 7);
+	InsertList(&s, 5, 9);
+	InsertList(&s, 6, 2);
+	InsertList(&s, 7, 4);
+	InsertList(&s, 8, 6);
+	InsertList(&s, 9, 8);
+	InsertList(&s, 10, 10);
+	InsertList(&s, 11, 11);
 	PrintList(&s);
+	ExchangeList(&s,5,11);
+	PrintList(&s);*/
+
+	/*SeqList s;
+	InitList(&s);
+	InsertList(&s, 1, 1);
+	InsertList(&s, 2, 3);
+	InsertList(&s, 3, 5);
+	InsertList(&s, 4, 7);
+	InsertList(&s, 5, 9);
+	FindX(&s, 1);
+	PrintList(&s);*/
+	//int a[] = { 1,5,6,13,17 };
+	//int b[] = { 2,9,10,13,22};
+	//int m = M_Search(a, b, 5);
+	//cout << "中位数是：" << m << endl;
+	int a[] = { 1,1,1,2,2,1,1,2,2,2,1 };
+	cout << "主元素是" << Majority(a, sizeof(a) / sizeof(a[0])) << endl;
+
 	system("pause");
 	return 0;
 }
