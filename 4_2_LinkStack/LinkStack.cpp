@@ -10,7 +10,7 @@ typedef struct stack {
 }LinkStack;
 
 LinkStack* CreateStack() {
-	LinkStack* s = (Node *)malloc(sizeof(Node));
+	LinkStack* s = (LinkStack *)malloc(sizeof(LinkStack));
 	if (s == NULL) {
 		cout << "½Úµã·ÖÅäÊ§°Ü" << endl;
 		return NULL;

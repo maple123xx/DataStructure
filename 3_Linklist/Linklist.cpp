@@ -3,38 +3,24 @@
 #include<algorithm>
 using namespace std;
 
-PNODE CreateList() {	//PNODE是指针类型,PNODE等价于NODE *
-	int length;//链表长度
-	int value;//用于临时存放用户输入的节点的值
-	PNODE pHead = (PNODE)malloc(sizeof(NODE));//pHead是一个指针,可用来指向一个NODE型对象
-	if (pHead == NULL) {
-		printf("Memory allocation failure");
-		exit(-1);
+void InitList(PNODE pHead) {//带头节点的单链表初始化
+	pHead = NULL;
+	cout << "初始化成功" << endl;
+}
+PNODE CreateList(PNODE pHead) {	//PNODE是指针类型,PNODE等价于NODE *
+	PNODE s, r = pHead;
+	int x;
+	cout << "请输入链表的值（输入100表示结束）：" << endl;
+	cin >> x;
+	while (x != 100) {//输入100表示结束
+		s = (PNODE)malloc(sizeof(NODE));
+		s->data = x;
+		r->next = s;
+		r = s;
+		cin >> x;
 	}
-	else
-	{
-		PNODE pTail = pHead;
-		pHead->next = NULL;
-		printf("Please input the length of the list: ");
-		scanf_s("%d", &length);
-		for (int i = 0; i < length; ++i) {
-			PNODE p = (PNODE)malloc(sizeof(NODE));
-			if (p == NULL) {
-				printf("Memory allocation failure");
-				exit(-1);
-			}
-			else
-			{	
-				printf("Please input the value of the node: ");
-				scanf_s("%d", &value);
-				p->data = value;
-				pTail->next = p;
-				p->next = NULL;
-				pTail = p;
-			}
-		}
-	}
-	return pHead;//返回头节点
+	r->next = NULL;
+	return pHead;
 }
 
 void DestroyList(PNODE pHead) {
@@ -146,9 +132,10 @@ void SortList(PNODE pHead) {
 	}
 }
 
-void print(PNODE pHead) {
+void PrintList(PNODE pHead) {
 	PNODE p = pHead->next;
-	while (p != NULL)
+	cout << "输出此链表："<< endl;
+	while (p)
 	{
 		printf("%d\t", p->data);
 		p = p->next;
