@@ -137,10 +137,10 @@ void PrintList(PNODE pHead) {
 	cout << "Êä³ö´ËÁ´±í£º"<< endl;
 	while (p)
 	{
-		printf("%d\t", p->data);
+		cout << p->data << "\t";
 		p = p->next;
 	}
-	printf("\n");
+	cout<<endl;
 }
 
 void InsertFrontList(PNODE pos, int x) {

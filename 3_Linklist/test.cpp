@@ -8,7 +8,7 @@ void InitList2(PNODE &L) {//²»´øÍ·½ÚµãµÄµ¥Á´±í³õÊ¼»¯£¬ÓÃ&L¿ÉÒÔÈ¡µ½PNODE L¶¨ÒåµÄÖ
 	L = NULL;
 	cout << "³õÊ¼»¯³É¹¦"<< endl;
 }
-void CreateList2(PNODE &L) {//Í·²å´´½¨µ¥Á´±í
+void CreateList2_1(PNODE &L) {//Í·²å´´½¨²»´øÍ·½ÚµãµÄµ¥Á´±í
 	PNODE p;
 	int x;
 	cout << "ÇëÊäÈëÁ´±íµÄÖµ£¨ÊäÈë100±íÊ¾½áÊø£©£º"<< endl;
@@ -21,7 +21,7 @@ void CreateList2(PNODE &L) {//Í·²å´´½¨µ¥Á´±í
 		cin >> x;
 	}
 }
-void CreateList3(PNODE &L) {//Î²²å´´½¨²»´øÍ·µÄµ¥Á´±í
+void CreateList2_2(PNODE &L) {//Î²²å´´½¨²»´øÍ·µÄµ¥Á´±í
 	PNODE r = L;//rÊÇÎ²Ö¸Õë
 	if (r)			//Èôr²»Îª¿ÕÖ¸Õë£¬Ôò±ä³ÉÎ²Ö¸Õë
 		while (r->next)
@@ -64,6 +64,7 @@ void Delete_X_3(PNODE &L, int x) {//µİ¹éÉ¾³ıÒ»¸ö²»´øÍ·½ÚµãµÄÁ´±íÖĞËùÓĞÖµÎªxµÄÔªË
 	else
 		Delete_X_3(L->next, x);
 }
+
 void Delete_X_2(PNODE pHead,int x) {//É¾³ı´øÍ·½ÚµãµÄÁ´±íÖĞËùÓĞÖµÎªxµÄÔªËØ
 	/*PNODE pre = pHead;//·½·¨Ò»£¬ÓÃÇ°ºóÁ½¸öÖ¸Õë
 	PNODE p = pre->next;
@@ -163,24 +164,29 @@ void SortList2(PNODE pHead) {//´øÍ·½ÚµãµÄÅÅĞò,²»Í¬ÓÚµÚÒ»¸öÅÅĞò·½·¨£¬Õâ¸öÊÇÖ±½Ó²Ù
 		p = r;
 	}
 }
-//ÓĞÎÊÌâ
 void Delete_Min2(PNODE pHead) {//ÒÀ´ÎÉ¾³ı×îĞ¡Öµ²¢Êä³ö
-	while (pHead->next) {
-		PNODE pre = pHead;
-		PNODE p = pHead->next;
-		while (p->next)
+	PNODE pre, p, minp, minpre;
+	cout << "Êä³ö´ËÁ´±í" << endl;
+	while (pHead->next)
+	{
+		pre = pHead;
+		p = pre->next;
+		minpre = pHead;
+		minp = minpre->next;
+		while (p)
 		{
-			if (pre->next->data > p->next->data)
-				pre = p;
+			if (minp->data>p->data) {
+				minpre = pre;
+				minp = p;
+			}
+			pre = p;
 			p = p->next;
 		}
-		cout << pre->next->data << "\t";
-		PNODE q = pre->next;
-		pre->next = q->next;
-		free(q);
+		cout << minp->data << '\t';
+		minpre->next = minp->next;
+		free(minp);
 	}
-	free(pHead);
-	pHead = NULL;
+	cout << endl;
 }
 PNODE DecompositonList1(PNODE A) {//½«Á´±íA·Ö½âÎªAºÍB,AÖĞ°üº¬ËùÓĞÆæÊıÔªËØ£¬BÖĞ°üº¬ËùÓĞÅ¼ÊıÔªËØ
 	PNODE B = (PNODE)malloc(sizeof(NODE));
@@ -315,6 +321,141 @@ PNODE Get_Common(PNODE A, PNODE B) {//ÇóÁ½¸öµİÔöÓĞĞòµÄÁ´±íµÄ¹«¹²½Úµã
 	r->next = NULL;
 	return C;
 }
+void UnionList(PNODE A, PNODE B) {//ÇóÁ½¸öµİÔöÁ´±íµÄ½»¼¯
+	PNODE r = A, pa = A->next, pb = B->next;//½á¹ûÁ´±í¾Í±£´æÔÚAÖĞ,rÊÇÎ²Ö¸Õë
+	while (pa && pb)
+	{
+		if (pa->data == pb->data) {
+			r->next = pa;
+			r = pa;
+			pa = pa->next;
+			PNODE u = pb;
+			pb = pb->next;
+			free(u);
+		}
+		else if (pa->data < pb->data) {
+			PNODE u = pa;
+			pa = pa->next;
+			free(u);
+		}
+		else
+		{
+			PNODE u = pb;
+			pb = pb->next;
+			free(u);
+		}
+	}
+	while (pa) {
+		PNODE u = pa;
+		pa = pa->next;
+		free(u);
+	}
+	while (pb) {
+		PNODE u = pb;
+		pb = pb->next;
+		free(u);
+	}
+	r->next = NULL;
+}
+void PatternList(PNODE A, PNODE B) {//ÅĞ¶ÏÕûÊıĞòÁĞBÊÇ·ñÊÇÕûÊıĞòÁĞAµÄÁ¬Ğø×ÓĞòÁĞ
+	PNODE p = A->next,q=B->next;
+	PNODE pre = p;
+	while (p && q)
+	{
+		if (p->data == q->data) {
+			p = p->next;
+			q = q->next;
+		}
+		else
+		{
+			pre = pre->next;
+			p = pre;
+			q = B->next;
+		}
+	}
+	if (q == NULL)
+		cout << "BÊÇAµÄÁ¬Ğø×ÓĞòÁĞ" << endl;
+	else
+	{
+		cout << "B²»ÊÇAµÄÁ¬Ğø×ÓĞòÁĞ" << endl;
+	}
+}
+
+void InitList3(PNODE pHead) {//´øÍ·½ÚµãÑ­»·µ¥Á´±íµÄ³õÊ¼»¯
+	pHead->next = pHead;
+	cout << "³õÊ¼»¯³É¹¦" << endl;
+}
+void CreateList3_1(PNODE pHead) {//Í·²å´´½¨´øÍ·Ñ­»·µ¥Á´±í
+	PNODE p;
+	int x;
+	cout << "ÇëÊäÈëÁ´±íµÄÖµ£¨ÊäÈë100±íÊ¾½áÊø£©£º" << endl;
+	cin >> x;
+	while (x != 100)
+	{
+		p = (PNODE)malloc(sizeof(NODE));
+		p->data = x;
+		p->next = pHead->next;
+		pHead->next = p;
+		cin >> x;
+	}
+}
+void CreateList3_2(PNODE pHead) {//Î²²å´´½¨´øÍ·Ñ­»·µ¥Á´±í
+	PNODE p, r = pHead;
+	int x;
+	cout << "ÇëÊäÈëÁ´±íµÄÖµ£¨ÊäÈë100±íÊ¾½áÊø£©£º" << endl;
+	cin >> x;
+	while (x != 100)
+	{
+		p = (PNODE)malloc(sizeof(NODE));
+		p->data = x;
+		r->next = p;
+		r = p;
+		cin >> x;
+	}
+	r->next = pHead;
+}
+void PrintList3(PNODE pHead) {
+	PNODE p = pHead->next;
+	cout << "Êä³öÁ´±íÎª£º" << endl;
+	while (p != pHead)
+	{
+		cout << p->data << "\t";
+		p = p->next;
+	}
+	cout << endl;
+}
+void UnionList2(PNODE A, PNODE B) {//½«Ò»¸öÑ­»·µ¥Á´±í½Óµ½ÁíÒ»¸öÑ­»·µ¥Á´±íºóÃæ£¬Ê¹Ö®ÈÔ±£³ÖÑ­»·
+	PNODE pa = A->next, pb = B->next;
+	while (pa->next != A)
+		pa = pa->next;
+	while (pb->next != B)
+		pb = pb->next;
+	pa->next = B;
+	pb->next = A;
+}
+void Delete_Min3(PNODE pHead) {//ÒÀ´ÎÉ¾³ıÑ­»·µ¥Á´±íµÄ×îĞ¡½Úµã²¢Êä³ö
+	PNODE pre, p, minpre, minp;
+	cout << "Êä³ö´ËÁ´±í£º" << endl;
+	while (pHead->next != pHead) {
+		pre = pHead;
+		p = pHead->next;
+		minpre = pre;
+		minp = p;
+		while (p != pHead)
+		{
+			if (minp->data > p->data) {
+				minpre = pre;
+				minp = p;
+			}
+			pre = p;
+			p = p->next;
+		}
+		cout << minp->data << '\t';
+		minpre->next = minp->next;
+		free(minp);
+	}
+	cout << endl;
+}
 int main() {
 	//PNODE L;//¶¨ÒåÒ»¸öÖ¸Õë£¬¶ø²»ÊÇÒ»¸ö½Úµã£¬Èç¹ûÓÃNODE L;ÔòÖÁÉÙ»á´´ÔìÒ»¸ö½Úµã(ÒòÎªÖ»ÒªÍ·Ö¸Õë£¬²»ÒªÍ·½Úµã)
 	//InitList2(L);
@@ -322,21 +463,24 @@ int main() {
 	//PrintList2(L);
 	//Delete_X_3(L, 1);
 	//PrintList2(L);
-	/*NODE L;
-	InitList(&L);
-	CreateList(&L);
-	PrintList(&L);
-	Del_Same(&L);
-	PrintList(&L);*/
-	NODE A, B;
-	InitList(&A);
-	CreateList(&A);
-	PrintList(&A);
-	InitList(&B);
-	CreateList(&B);
-	PrintList(&B);
-	PNODE C = Get_Common(&A, &B);
-	PrintList(C);
+	//NODE L;
+	//InitList(&L);
+	//CreateList(&L);
+	//PrintList(&L);
+	//Del_Same(&L);
+	//PrintList(&L);
+	//NODE A, B;
+	//InitList(&A);
+	//CreateList(&A);
+	//PrintList(&A);
+	//InitList(&B);
+	//CreateList(&B);
+	//PrintList(&B);
+	//PatternList(&A, &B);
+	//UnionList(&A, &B);
+	//PrintList(&A);
+	//PNODE C = Get_Common(&A, &B);
+	//PrintList(C);
 	//Delete_X_2(&L, 1);
 	//ReversePrint(&L);
 	//Delete_Min1(&L);
@@ -344,13 +488,22 @@ int main() {
 	//SortList(&L);
 	//Delete_Min2(&L);
 	//PrintList(&L);
+	//NODE A;
+	//InitList(&A);
+	//CreateList(&A);
+	//PrintList(&A);
+	//PNODE B = DecompositonList1(&A);
+	//PrintList(&A);
+	//PrintList(B);
 	/*NODE A;
-	InitList(&A);
-	CreateList(&A);
-	PrintList(&A);
-	PNODE B = DecompositonList1(&A);
-	PrintList(&A);
-	PrintList(B);*/
+	InitList3(&A);
+	CreateList3_2(&A);
+	Delete_Min3(&A);
+	PrintList3(&A);*/
+	NODE pHead;
+	InitList(&pHead);
+	CreateList(&pHead);
+	Delete_Min2(&pHead);
 	system("pause");
 	return 0;
 }
