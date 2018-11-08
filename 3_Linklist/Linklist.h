@@ -6,7 +6,12 @@ typedef struct Node {
 	struct Node* next;
 }NODE,*PNODE;	//NODE等价于struct Node,*PNODE 等价于struct Node *
 
-void InitList(PNODE pHead);//初始化
+typedef struct DNode {//双链表的定义
+	int data;
+	struct DNode *prior, *next;
+}DNODE,*DPNODE;
+
+void InitList(PNODE pHead);//带头节点单链表的初始化
 PNODE CreateList(PNODE pHead);//尾插创建链表
 void DestroyList(PNODE pHead);//销毁链表
 PNODE ClearList(PNODE pHead);//清空链表

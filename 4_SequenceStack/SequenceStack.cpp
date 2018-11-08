@@ -1,5 +1,4 @@
 #include<iostream>
-#include<stdlib.h>
 using namespace std;
 
 //用数组实现顺序栈
@@ -9,31 +8,22 @@ typedef struct stack {
 
 }STACK, *Stack;
 
-void InitStack(Stack s);//初始化一个顺序栈
-bool EmptyStack(Stack s);//判断栈是否为空
-bool FullStack(Stack s);//判断栈是否为满
-bool PushStack(Stack s, int x);//入栈
-bool PopStack(Stack s,int *a);//出栈
-int TopStack(Stack s);//取栈顶元素
-int LengthStack(Stack s);//返回栈的长度
-void TravelStack(Stack s);//遍历栈
-
-void InitStack(Stack s) {
+void InitStack(Stack s) {//初始化一个顺序栈
 	s->top = -1;
 }
-bool EmptyStack(Stack s) {
+bool EmptyStack(Stack s) {//判断栈是否为空
 	if (s->top == -1)
 		return true;
 	else
 		return false;
 }
-bool FullStack(Stack s) {
+bool FullStack(Stack s) {//判断栈是否为满
 	if (s->top == 99)
 		return true;
 	else
 		return false;
 }
-bool PushStack(Stack s, int x) {
+bool PushStack(Stack s, int x) {//入栈
 	if (FullStack(s))
 		return false;
 	else {
@@ -41,7 +31,7 @@ bool PushStack(Stack s, int x) {
 		return true;
 	}
 }
-bool PopStack(Stack s, int *a) {
+bool PopStack(Stack s, int *a) {//出栈
 	if (EmptyStack(s)) {
 		return false;
 	}
@@ -51,15 +41,15 @@ bool PopStack(Stack s, int *a) {
 		return true;
 	}
 }
-int TopStack(Stack s) {
+int TopStack(Stack s) {//取栈顶元素
 	int x;
 	x = s->data[s->top];
 	return x;
 }
-int LengthStack(Stack s) {
+int LengthStack(Stack s) {//返回栈的长度
 	return s->top + 1;
 }
-void TravelStack(Stack s) {
+void TravelStack(Stack s) {//遍历栈
 	int x;
 	while (!EmptyStack(s))
 	{
@@ -68,33 +58,62 @@ void TravelStack(Stack s) {
 	}
 	cout << endl;
 }
+void JudgeStack(char a[]) {//判断一个栈的进栈出栈操作是否合法
+	int i = 0, j = 0, k = 0;
+	while (a[i] != '\0')
+	{
+		switch (a[i])
+		{
+		case 'I':
+			++j;
+			break;
+		case 'O':
+			++k;
+			if (k > j) {
+				cout << "序列非法" << endl;
+				return;
+			}
+		}
+		++i;
+	}
+	if (j != k) {
+		cout << "序列非法" << endl;
+		return;
+	}
+	else {
+		cout << "序列合法" << endl;
+		return;
+	}
+}
+
 int main() {
 	int i, length, ss;//ss为栈顶
-	Stack s = (Stack)malloc(sizeof(STACK));
-	InitStack(s);
-	PushStack(s, 1);
-	PushStack(s, 2);
-	PushStack(s, 3);
-	PushStack(s, 4);
-	PushStack(s, 5);
-	PushStack(s, 6);
-	PushStack(s, 7);
-	ss = TopStack(s);
+	STACK s;
+	InitStack(&s);
+	PushStack(&s, 1);
+	PushStack(&s, 2);
+	PushStack(&s, 3);
+	PushStack(&s, 4);
+	PushStack(&s, 5);
+	PushStack(&s, 6);
+	PushStack(&s, 7);
+	ss = TopStack(&s);
 	cout << "栈顶为" << ss << endl;
-	PopStack(s,&i);
+	PopStack(&s,&i);
 	cout << "将" << i <<"出栈"<< endl;
-	ss = TopStack(s);
+	ss = TopStack(&s);
 	cout << "栈顶为" << ss << endl;
-	length = LengthStack(s);
+	length = LengthStack(&s);
 	cout << "长度为" << length << endl;
-	TravelStack(s);
+	TravelStack(&s);
+	//char a[100] = {'I','O','I','I','O' ,'I','O','O',};
+	//JudgeStack(a);
 
 	system("pause");
 	return 0;
 }
 
 //#include<iostream>
-//#include<stdlib.h>
 //using namespace std;
 //
 ////用数组实现共享双向顺序栈

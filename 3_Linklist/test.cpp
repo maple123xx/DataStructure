@@ -1,6 +1,4 @@
-#include<stdio.h>
 #include<iostream>
-#include<stdlib.h>
 #include"Linklist.h"
 using namespace std;
 
@@ -380,6 +378,110 @@ void PatternList(PNODE A, PNODE B) {//判断整数序列B是否是整数序列A的连续子序列
 		cout << "B不是A的连续子序列" << endl;
 	}
 }
+void Search_K(PNODE pHead, int k) {//寻找倒数第K个节点
+	PNODE p = pHead->next, q = pHead->next;
+	int count = 0;
+	while (p)
+	{
+		if (count < k)
+			++count;
+		else
+			q = q->next;
+		p = p->next;
+	}
+	if (count < k)
+		return;
+	else
+		cout << "倒数第" << k << "个值为" << q->data << endl;
+}
+void Find_Common(PNODE A, PNODE B) {//找寻两个链表的公共起点
+	PNODE pa = A->next, pb = B->next;
+	int m = LengthList(A), n = LengthList(B);
+	cout << "共同的起点为" << endl;
+	while (m>n)
+	{
+		pa = pa->next;
+		--m;
+	}
+	while (n>m)
+	{
+		pb = pb->next;
+		--n;
+	}
+	while (pa && pa->data != pb->data)
+	{
+		pa = pa->next;
+		pb = pb->next;
+	}
+	cout << pa->data << endl;
+
+
+}
+void Delete_Absolute(PNODE pHead) {//单链表的所有数的绝对值都小于100，仅保留第一次出现的值，删除绝对值重复的值
+
+	//PNODE p = pHead, r;
+	//int a[100] = { 0 };//用一个数组保存已出现的值，用空间换时间
+	//while (p->next)
+	//{
+	//	int m = (p->next->data > 0) ? p->next->data : -(p->next->data);//只能用p->next判断，走到p的时候，判断p->next是否重复，
+	//	if (a[m] == 0) {											   //重复的话令r指向p->next，删除p->next
+	//		a[m] = 1;
+	//		p = p->next;
+	//	}
+	//	else
+	//	{
+	//		r = p->next;
+	//		p->next = r->next;
+	//		free(r);
+	//	}
+	//}
+	PNODE p = pHead, r;
+	int *q;
+	q = (int *)malloc(sizeof(int) * 101);
+	for (int i = 0; i < 101; ++i) {//动态分配内存给一个数组
+		*(q + i) = 0;
+	}
+	while (p->next)
+	{
+		int m = (p->next->data > 0) ? p->next->data : -(p->next->data);
+		if (*(q + m) == 0) {
+			*(q + m) = 1;
+			p = p->next;
+		}
+		else
+		{
+			r = p->next;
+			p->next = r->next;
+			free(r);
+		}
+	}
+	free(q);
+}
+void Symmetry2(PNODE pHead) {//判断单链表是否是对称的
+	int a[100] = {0};//使用栈的方法将前一半的链表入栈，然后每出栈一个就和链表的下一个值比较
+	int i;
+	int n = LengthList(pHead);
+	PNODE p = pHead->next;
+	for (i = 0; i < n / 2; ++i) {
+		a[i] = p->data;
+		p = p->next;
+	}
+	--i;//将i看成栈顶指针,回退一步
+	if (n % 2 == 1)//个数为奇数时，中间的数不用判断
+		p = p->next;
+	while (i > -1) {
+		if (a[i] == p->data) {
+			--i;
+			p = p->next;
+		}
+		else
+		{
+			cout << "不是对称的" << endl;
+			return;
+		}
+	}
+	cout << "是对称的" << endl;
+}
 
 void InitList3(PNODE pHead) {//带头节点循环单链表的初始化
 	pHead->next = pHead;
@@ -456,6 +558,72 @@ void Delete_Min3(PNODE pHead) {//依次删除循环单链表的最小节点并输出
 	}
 	cout << endl;
 }
+
+void InitList4(DPNODE pHead) {//循环双链表的初始化
+	pHead->next = pHead;
+	pHead->prior = pHead;
+	cout << "初始化成功" << endl;
+}
+void CreateList4_1(DPNODE pHead) {//头插创建带头循环双链表
+	DPNODE p;
+	int x;
+	cout << "请输入链表的值（输入100表示结束）：" << endl;
+	cin >> x;
+	while (x != 100)
+	{
+		p = (DPNODE)malloc(sizeof(DNODE));
+		p->data = x;
+		p->next = pHead->next;
+		pHead->next->prior = p;
+		pHead->next = p;
+		p->prior = pHead;
+		cin >> x;
+	}
+	cout << "pHead->prior=" << pHead->prior << endl;
+}
+void CreateList4_2(DPNODE pHead) {//尾插创建带头循环双链表,有问题
+	DPNODE p, r = pHead;
+	int x;
+	cout << "请输入链表的值（输入100表示结束）：" << endl;
+	cin >> x;
+	while (x != 100)
+	{
+		p = (DPNODE)malloc(sizeof(DNODE));
+		p->data = x;
+		r->next = p;
+		p->prior = r;
+		r = p;
+		cin >> x;
+	}
+	r->next = pHead;
+}
+void PrintList4(DPNODE pHead) {
+	DPNODE p = pHead->prior;
+	cout << "输出链表为：" << endl;
+	while (p != pHead)
+	{
+		cout << p->data << "\t";
+		p = p->prior;
+	}
+	cout << endl;
+}
+void Symmetry(DPNODE pHead) {//判断循环双链表是否是对称的
+	DPNODE p = pHead->next, q = pHead->prior;
+	while (p != q && q->next != p) {
+		if (p->data == q->data) {
+			p = p->next;
+			q = q->prior;
+		}
+		else
+		{
+			cout << "该循环双链表不是对称的" << endl;
+			return;
+		}
+	}
+	cout << "该循环双链是对称的" << endl;
+	return;
+}
+
 int main() {
 	//PNODE L;//定义一个指针，而不是一个节点，如果用NODE L;则至少会创造一个节点(因为只要头指针，不要头节点)
 	//InitList2(L);
@@ -500,10 +668,19 @@ int main() {
 	CreateList3_2(&A);
 	Delete_Min3(&A);
 	PrintList3(&A);*/
+	/*NODE pHead;
+	InitList(&pHead);
+	CreateList(&pHead);
+	Search_K(&pHead,3);*/
+	/*DNODE A;
+	InitList4(&A);
+	CreateList4_2(&A);
+	PrintList4(&A);*/
+	//Symmetry(&A);
 	NODE pHead;
 	InitList(&pHead);
 	CreateList(&pHead);
-	Delete_Min2(&pHead);
+	Symmetry2(&pHead);
 	system("pause");
 	return 0;
 }
