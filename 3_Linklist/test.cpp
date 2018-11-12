@@ -1,6 +1,4 @@
-#include<iostream>
 #include"Linklist.h"
-using namespace std;
 
 void InitList2(PNODE &L) {//不带头节点的单链表初始化，用&L可以取到PNODE L定义的指针的地址，从而达到传地址而不是传值的目的
 	L = NULL;
@@ -579,31 +577,47 @@ void CreateList4_1(DPNODE pHead) {//头插创建带头循环双链表
 		p->prior = pHead;
 		cin >> x;
 	}
-	cout << "pHead->prior=" << pHead->prior << endl;
 }
-void CreateList4_2(DPNODE pHead) {//尾插创建带头循环双链表,有问题
-	DPNODE p, r = pHead;
-	int x;
-	cout << "请输入链表的值（输入100表示结束）：" << endl;
-	cin >> x;
-	while (x != 100)
+void CreateList4_2(const string &str,DPNODE pHead)
+{//尾插创建带头循环双链表
+	try
 	{
-		p = (DPNODE)malloc(sizeof(DNODE));
-		p->data = x;
-		r->next = p;
-		p->prior = r;
-		r = p;
-		cin >> x;
+		DPNODE p;
+		DPNODE r = pHead->prior;
+		ifstream ins(str);
+		if (!ins) { throw exception(); }
+
+		int numRow;
+		ins >> numRow;
+		if (numRow < 1) { throw exception(); }
+		
+		int x;
+		for (int i = 0; i < numRow; ++i)
+		{
+			p = (DPNODE)malloc(sizeof(DNODE));
+			ins >> x;
+			p->data = x;
+
+			r->next = p;
+			p->prior = r;
+			p->next = pHead;
+			pHead->prior = p;
+
+			r = p;
+		}
 	}
-	r->next = pHead;
+	catch (...)
+	{
+		printErrorAndExit("CreateList4_2");
+	}
 }
 void PrintList4(DPNODE pHead) {
-	DPNODE p = pHead->prior;
+	DPNODE p = pHead->next;
 	cout << "输出链表为：" << endl;
 	while (p != pHead)
 	{
 		cout << p->data << "\t";
-		p = p->prior;
+		p = p->next;
 	}
 	cout << endl;
 }
@@ -622,6 +636,12 @@ void Symmetry(DPNODE pHead) {//判断循环双链表是否是对称的
 	}
 	cout << "该循环双链是对称的" << endl;
 	return;
+}
+
+void printErrorAndExit(const string &str)
+{
+	cout << "There is an error in " + str + " ! " << endl;
+	exit(1);
 }
 
 int main() {
@@ -672,15 +692,17 @@ int main() {
 	InitList(&pHead);
 	CreateList(&pHead);
 	Search_K(&pHead,3);*/
-	/*DNODE A;
+
+	const string str = "data\\test_5.txt";
+	DNODE A;
 	InitList4(&A);
-	CreateList4_2(&A);
-	PrintList4(&A);*/
+	CreateList4_2(str, &A);
+	PrintList4(&A);
 	//Symmetry(&A);
-	NODE pHead;
+
+	/*NODE pHead;
 	InitList(&pHead);
 	CreateList(&pHead);
-	Symmetry2(&pHead);
-	system("pause");
+	Symmetry2(&pHead);*/
 	return 0;
 }
