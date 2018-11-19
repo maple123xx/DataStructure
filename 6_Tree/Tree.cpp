@@ -1,5 +1,10 @@
 #include"Tree.h"
 
+void printErrorAndExit(const string &str)
+{
+	cout << "There is an error in " + str + " ! " << endl;
+	exit(1);
+}
 BTNode* CreateTree(const string &str) {
 	BTNode *p;
 	try
@@ -79,8 +84,106 @@ void PostOrder(BTNode *root) {//后序遍历递归版
 		cout << root->data << '\t';
 	}
 }
-void printErrorAndExit(const string &str)
-{
-	cout << "There is an error in " + str + " ! " << endl;
-	exit(1);
+int getDepth(BTNode *root) {//返回树的深度
+	if (root == NULL)
+		return 0;
+	else
+	{
+		int ldepth, rdepth;
+		ldepth = getDepth(root->lchild);
+		rdepth = getDepth(root->rchild);
+		return ldepth > rdepth ? ldepth + 1 : rdepth + 1;
+	}
+}
+void LevelOrder(BTNode *root) {//非递归的层次遍历
+	BTNode *p;
+	int rear = 0, front = 0;
+	BTNode *queue[N_Node];
+	rear = (rear + 1) % N_Node;
+	queue[rear] = root;
+	while (rear != front)//队列不空时,100个节点肯定达不到，所以不用管rear!=front是队空还是队满
+	{
+		front = (front + 1) % N_Node;
+		p = queue[front];
+		cout << p->data << '\t';
+		if (p->lchild) {
+			rear = (rear + 1) % N_Node;
+			queue[rear] = p->lchild;
+		}
+		if (p->rchild) {
+			rear = (rear + 1) % N_Node;
+			queue[rear] = p->rchild;
+		}
+
+	}
+}
+void PreOrder2(BTNode *root) {	//先序遍历的非递归版本
+	//BTNode *p;		//法一：太君的方法，
+	//BTNode *stack[N_Node];
+	//int top = -1;
+	//stack[++top] = root;
+	//while (top != -1)//栈不空时
+	//{
+	//	p = stack[top--];
+	//	cout << p->data << "\t";
+	//	if (p->rchild)		//右孩子先进栈
+	//		stack[++top] = p->rchild;
+	//	if (p->lchild)
+	//		stack[++top] = p->lchild;
+	//}
+
+	BTNode *p = root;			//法二：类似于中序非递归遍历，只是输出data的地方不一样
+	BTNode *stack[N_Node];
+	int top = -1;
+	while (top != -1 || p)
+	{
+		if (p) {
+			stack[++top] = p;
+			cout << p->data << '\t';
+			p = p->lchild;
+		}
+		else
+		{
+			p = stack[top--];
+			p = p->rchild;
+		}
+	}
+}
+void InOrder2(BTNode *root) {	//中序遍历的非递归版本
+	BTNode *p=root;
+	BTNode *stack[N_Node];
+	int top = -1;
+	while (top != -1 || p)//p==NULL的判断不能掉，栈空的时候可能右子树还没遍历
+	{
+		if (p)
+		{
+			stack[++top] = p;
+			p = p->lchild;
+		}
+		else {
+			p = stack[top--];
+			cout << p->data << '\t';
+			p = p->rchild;
+		}
+	}
+}
+void PostOrder2(BTNode *root) {//后序遍历的非递归版本
+	BTNode *p=root;	//太君的方法，用两个栈，节点先入栈到栈1，再出栈到栈2，最后遍历栈2
+	BTNode *stack1[N_Node],*stack2[N_Node];
+	int top1 = -1, top2 = -1;
+	stack1[++top1] = p;
+	while (top1 != -1)
+	{
+		p = stack1[top1--];
+		stack2[++top2] = p;
+		if (p->lchild)
+			stack1[++top1]=p->lchild;
+		if(p->rchild)
+			stack1[++top1] = p->rchild;
+	}
+	while (top2 != -1)
+	{
+		p = stack2[top2--];
+		cout << p->data << '\t';
+	}
 }

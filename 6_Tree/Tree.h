@@ -14,10 +14,15 @@ typedef struct BTNode {
 #define N_level 1024 //满足层次遍历对循环队列大小的要求
 #define N_stack 100 //栈容量上限
 
+void printErrorAndExit(const string &str);
 BTNode* CreateTree(const string &str);
 void CreateTree2(int root, int num_node, ElemType tree_data[N_Node], int tree_order[N_Node], BTNode *p);
-void printErrorAndExit(const string &str);
 void PreOrder(BTNode *root);
 void InOrder(BTNode *root);
 void PostOrder(BTNode *root);
+int getDepth(BTNode *root);
+void LevelOrder(BTNode *root);
+void PreOrder2(BTNode *root); 
+void InOrder2(BTNode *root);
+void PostOrder2(BTNode *root);
 #endif // !Tree_
