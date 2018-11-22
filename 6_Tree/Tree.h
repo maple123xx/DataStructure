@@ -21,8 +21,19 @@ void PreOrder(BTNode *root);
 void InOrder(BTNode *root);
 void PostOrder(BTNode *root);
 int getDepth(BTNode *root);
+int getDepth2(BTNode *root);
 void LevelOrder(BTNode *root);
 void PreOrder2(BTNode *root); 
 void InOrder2(BTNode *root);
 void PostOrder2(BTNode *root);
+void InverseLevel(BTNode *root);
+void IsComplete(BTNode *root);
+int DoubleSonNodes(BTNode *root);
+void SwapTree(BTNode *root);
+ElemType PreKNode(BTNode *root,int k);
+void DeleteXTree(BTNode *root);
+void DeleteX(BTNode *root, ElemType x);
+void SearchX(BTNode *root, ElemType x);
+
+
 #endif // !Tree_

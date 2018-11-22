@@ -7,6 +7,7 @@
 #include<deque>
 #include<map>
 #include<exception>
+#include<algorithm>
 
 using std::cout;
 using std::cin;
