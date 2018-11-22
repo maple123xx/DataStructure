@@ -1,7 +1,7 @@
 #include"Tree.h"
 
 int main() {
-	const string str = "data\\tree_6.txt";
+	const string str = "data\\tree_15.txt";
 	BTNode *p = CreateTree(str);
 	//PostOrder(p);
 	//cout << endl;
@@ -17,7 +17,9 @@ int main() {
 	//cout << PreKNode(p, 5) << endl;
 	//DeleteX(p, 'B');
 	//PreOrder(p);
-	SearchX(p, 'F');
-	cout << endl;
+	BTNode *s=Search1(p, 'L');
+	BTNode *t = Search1(p, 'O');
+	BTNode *common = CommonAncestor(p, s, t);
+	cout << "公共祖先为"<<common->data << endl;
 	return 0;
 }

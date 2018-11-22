@@ -34,6 +34,7 @@ ElemType PreKNode(BTNode *root,int k);
 void DeleteXTree(BTNode *root);
 void DeleteX(BTNode *root, ElemType x);
 void SearchX(BTNode *root, ElemType x);
-
+BTNode *Search1(BTNode *root, ElemType x);
+BTNode *CommonAncestor(BTNode *root, BTNode *p, BTNode *q);
 
 #endif // !Tree_

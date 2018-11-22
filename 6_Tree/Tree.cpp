@@ -329,7 +329,7 @@ void SwapTree(BTNode *root) {	//½»»»¶þ²æÊ÷µÄ×óÓÒ×ÓÊ÷
 		swap(root->lchild, root->rchild);
 	}
 }
-ElemType PreKNode(BTNode *root,int k) {
+ElemType PreKNode(BTNode *root,int k) {//ÇóÏÈÐò±éÀúÐòÁÐÖÐµÚk¸ö½ÚµãµÄÖµ
 	BTNode *p = root;
 	BTNode *stack[N_Node];
 	int top = -1;
@@ -349,6 +349,7 @@ ElemType PreKNode(BTNode *root,int k) {
 			p = p->rchild;
 		}
 	}
+	return '*';
 }
 void DeleteXTree(BTNode *root) {//É¾³ýÒÔrootÎª¸ùµÄ×ÓÊ÷
 	if (root) {
@@ -421,4 +422,57 @@ void SearchX(BTNode *root,ElemType x) {	//²éÕÒÖµÎªxµÄ½Úµã£¬²¢´òÓ¡¸Ã½ÚµãµÄËùÓÐ×æÏ
 			}
 		}
 	}
+}
+BTNode *Search1(BTNode *root, ElemType x) {//²éÕÒÖµÎªxµÄ½áµã£¬Èô´æÔÚÔò·µ»ØÖ¸Ïò¸Ã½áµãµÄÖ¸Õë£¬·ñÔò·µ»ØNULL
+	BTNode *p = NULL;
+	if (root) {
+		if (root->data == x)
+			p = root;
+		else
+		{
+			p = Search1(root->lchild, x);
+			if (p == NULL)
+				p = Search1(root->rchild,x);
+		}
+	}
+	return p;
+}
+BTNode *CommonAncestor(BTNode *root, BTNode *s, BTNode *t) {
+	BTNode *p = root;			//Ñ°ÕÒ½ÚµãsºÍtµÄ×î½ü¹«¹²×æÏÈ½Úµã£¬ÓÃºóÐò±éÀú
+	BTNode *stack[N_Node], *stack1[N_Node];
+	int top = -1, top1 = -1;
+	BTNode *r = NULL;
+	while (p || top != -1) {
+		if (p) {
+			stack[++top] = p;
+			p = p->lchild;
+		}
+		else {
+			p = stack[top];
+			if (p->rchild && p->rchild != r) {
+				p = p->rchild;
+				stack[++top] = p;
+				p = p->lchild;
+			}
+			else
+			{
+				p = stack[top--];
+				if (p == s) {
+					for (int i = 0; i <= top; ++i)
+						stack1[++top1] = stack[i];
+				}
+				if (p == t) {
+					for (int i = top; i >= 0; --i) {
+						for (int j = top1; j >= 0; --j) {
+							if (stack[i] == stack1[j])
+								return stack[i];
+						}
+					}
+				}
+				r = p;
+				p = NULL;
+			}
+		}
+	}
+	return NULL;
 }
