@@ -102,7 +102,7 @@ int getDepth2(BTNode *root) {	//非递归求树的深度，用层次遍历
 	BTNode *p;
 	BTNode *queue[N_Node];
 	int front = 0, rear = 0;
-	int last = 1, level = 1;	//last指向下一层第一个节点
+	int last = 1, level = 1;	//last指向当前层最右节点
 	queue[++rear] = root;	//没有使用循环队列，尽量简单一点
 	while (rear != front) {
 		p = queue[++front];
@@ -475,4 +475,54 @@ BTNode *CommonAncestor(BTNode *root, BTNode *s, BTNode *t) {
 		}
 	}
 	return NULL;
+}
+int BTwidth(BTNode *root) {//求树的宽度
+	BTNode *p;
+	BT_Width queue[N_Node];
+	int rear = 0, front = 0;
+	int k,max=0;
+	int depth = getDepth(root);	//求树的深度
+	int num[N_lev];		//记录每一层节点数的数组，即每一层的宽度
+	for (int i = 1; i <= depth; ++i)
+		num[i] = 0;
+	rear = (rear + 1) % N_Node;
+	queue[rear].t_node = root;//根节点入队
+	queue[rear].num_level = 1;//根节点的层次数为1
+
+	while (rear != front) {
+		front = (front + 1) % N_Node;
+		k = queue[front].num_level;	//k记录出队节点所在层次
+		++num[k];						//该层节点数+1
+		p = queue[front].t_node;
+		if (p->lchild) {
+			rear = (rear + 1) % N_Node;
+			queue[rear].t_node = p->lchild;
+			queue[rear].num_level = k+1;	//层次数+1
+		}
+		if (p->rchild) {
+			rear = (rear + 1) % N_Node;
+			queue[rear].t_node = p->rchild;
+			queue[rear].num_level = k + 1;
+		}
+	}
+	for (int i = 1; i < N_lev; ++i) {
+		if (num[i] > max)
+			max = num[i];
+	}
+	return max;
+}
+int Similar(BTNode *root1, BTNode *root2) {//判断两棵二叉树是否相似
+	int left, right;
+	if (root1 == NULL && root2 == NULL) {
+		return 1;
+	}
+	else if (root1 == NULL || root2 == NULL) {
+		return 0;
+	}
+	else
+	{
+		left = Similar(root1->lchild, root2->lchild);
+		right = Similar(root1->rchild, root2->rchild);
+		return left&&right;
+	}
 }

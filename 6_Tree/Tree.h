@@ -9,6 +9,11 @@ typedef struct BTNode {
 	struct BTNode *lchild, *rchild;
 }BTNode,*BTree;
 
+typedef struct BT_Width {//求数的宽度时定义的一个结构体，用来定义队列
+	BTNode *t_node;
+	int num_level;	//节点所在的层次
+}BT_Width;
+
 #define N_Node 100 //结点数量，比树中结点数量上限大1
 #define N_lev 10 //树的深度上限
 #define N_level 1024 //满足层次遍历对循环队列大小的要求
@@ -36,5 +41,7 @@ void DeleteX(BTNode *root, ElemType x);
 void SearchX(BTNode *root, ElemType x);
 BTNode *Search1(BTNode *root, ElemType x);
 BTNode *CommonAncestor(BTNode *root, BTNode *p, BTNode *q);
+int BTwidth(BTNode *root);
+int Similar(BTNode *root1, BTNode *root2);
 
 #endif // !Tree_
