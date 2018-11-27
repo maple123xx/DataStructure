@@ -2,7 +2,7 @@
 #define Tree_
 
 #include"myNamespace.h"
-typedef char ElemType;
+typedef int ElemType;
 typedef struct BTNode {
 	ElemType data;
 	//int ltag, rtag;		//为0代表指向孩子，为1代表指向线索
@@ -43,5 +43,23 @@ BTNode *Search1(BTNode *root, ElemType x);
 BTNode *CommonAncestor(BTNode *root, BTNode *p, BTNode *q);
 int BTwidth(BTNode *root);
 int Similar(BTNode *root1, BTNode *root2);
+BTNode *PreInCreate(ElemType A[], ElemType B[], int l1, int h1, int l2, int h2);
+void PreToPost(ElemType pre[], int l1, int h1, ElemType post[], int l2, int h2);
 
+//typedef struct LinkList {
+//	ElemType data;
+//	struct LinkList *rchild;
+//} *LinkList;
+//LinkList head, pre = NULL;
+//LinkList InOrderLeaf(BTNode *root);
+
+typedef struct weightBTNode {
+	int weight;
+	struct weightBTNode *lchild, *rchild;
+}weightBTNode;
+weightBTNode* CreateWeightTree(const string &str);
+void CreateWeightTree2(int root, int num_node, int weight[N_Node], int tree_order[N_Node], weightBTNode *p);
+int WPL(weightBTNode *root);
+int wpl_PreOrder(weightBTNode *root, int deep);
+int wpl_LevelOrder(weightBTNode *root);
 #endif // !Tree_

@@ -526,3 +526,140 @@ int Similar(BTNode *root1, BTNode *root2) {//判断两棵二叉树是否相似
 		return left&&right;
 	}
 }
+BTNode *PreInCreate(ElemType A[], ElemType B[], int l1, int h1, int l2, int h2) {
+	// 根据先序遍历和中序遍历创建一个二叉树
+	BTNode *root = (BTNode *)malloc(sizeof(BTNode));
+	root->data = A[l1];
+	int i;
+	for (i = l2; B[i] != root->data; ++i);//找到位于中间的节点（根节点）
+	int llen = i - l2;//左子树长度
+	int rlen = h2 - i;		//右子树长度
+	if (llen)
+		root->lchild = PreInCreate(A, B, l1 + 1, l1 + llen, l2, l2 + llen - 1);
+	else
+		root->lchild = NULL;
+	if (rlen)
+		root->rchild = PreInCreate(A, B, h1 - rlen + 1, h1, h2 - rlen + 1, h2);
+	else
+		root->rchild = NULL;
+	return root;
+
+}
+void PreToPost(ElemType pre[], int l1, int h1, ElemType post[], int l2, int h2) {
+	int half;//知道一颗满二叉树的先序遍历，求其后序遍历    有问题
+	while (h1>=l1) {
+		post[h2] = pre[l1];
+		half = (h1 - l1) / 2;
+		PreToPost(pre, l1 + 1, l1 + half, post, l2, l2 + half - 1);
+		PreToPost(pre, l1 + half + 1, h1, post, l2 + half, h2 - 1);
+	}
+}
+//LinkList InOrderLeaf(BTNode *root) {		//有问题
+//	if (root) {
+//		InOrderLeaf(root->lchild);
+//		if (root->lchild == NULL && root->rchild == NULL) {
+//			if (pre == NULL) {
+//				head = root;
+//				pre = root;
+//			}
+//		}
+//	}
+//}
+
+
+weightBTNode* CreateWeightTree(const string &str) {//建一颗带权路径树，相当于把树的节点信息变为权值，其他不变
+	weightBTNode *p;
+	try
+	{
+		int i;
+		int num_node;
+		int tree_weight[N_Node];
+		int tree_order[N_Node];
+		p = (weightBTNode *)malloc(sizeof(weightBTNode));
+		p->lchild = p->rchild = NULL;
+
+		ifstream ins(str);
+		if (!ins) { throw exception(); }
+		ins >> num_node;//读第一行，代表节点个数
+		if (num_node < 1) { throw exception(); }
+
+		for (i = 1; i <= num_node; ++i) {//其余均是数据对（int，int），前者表示weight，
+			ins >> tree_weight[i];		 //后者表示其位置在完全二叉树中所对应的序号（根结点的序号为1）
+			ins >> tree_order[i];
+		}
+		for (i = 1; i <= num_node; ++i)//通过遍历找到第一个根结点，因为读入的时候可能不是按顺序读的
+		{
+			if (tree_order[i] == 1)		//根结点的序号为1
+			{
+				CreateWeightTree2(i, num_node, tree_weight, tree_order, p);
+			}
+		}
+	}
+	catch (...)//...表示捕获所有错误
+	{
+		printErrorAndExit("CreateTree");
+	}
+	return p;
+}
+void CreateWeightTree2(int root, int num_node, int tree_weight[N_Node], int tree_order[N_Node], weightBTNode *p) {
+	int i;					//递归创建树的节点
+							//	BTNode *lchild, *rchild;
+	p->weight = tree_weight[root];
+	for (i = 1; i <= num_node; ++i) {
+		if (tree_order[i] == tree_order[root] * 2) {
+			weightBTNode *lchild = (weightBTNode *)malloc(sizeof(weightBTNode));
+			p->lchild = lchild;
+			lchild->lchild = lchild->rchild = NULL;
+			CreateWeightTree2(i, num_node, tree_weight, tree_order, lchild);
+		}
+		else if (tree_order[i] == tree_order[root] * 2 + 1) {
+			weightBTNode *rchild = (weightBTNode *)malloc(sizeof(weightBTNode));
+			p->rchild = rchild;
+			rchild->lchild = rchild->rchild = NULL;
+			CreateWeightTree2(i, num_node, tree_weight, tree_order, rchild);
+		}
+	}
+}
+int WPL(weightBTNode *root) {//求带权路径和,其实完全没有必要写建带权树的代码，把ElemType的char改为int就可当weight了
+	return wpl_PreOrder(root, 0);//假设只有一个根节点，带权路径为0，虽然是叶节点，但是没有边
+}
+int wpl_PreOrder(weightBTNode *root, int deep) {
+
+	static int wpl = 0;	//法一：递归
+	if (root->lchild == NULL && root->rchild == NULL)
+		wpl += deep*root->weight;
+	if (root->lchild)
+		wpl_PreOrder(root->lchild, deep + 1);
+	if (root->rchild)
+		wpl_PreOrder(root->rchild, deep + 1);
+	return wpl;
+}
+int wpl_LevelOrder(weightBTNode *root) {
+	weightBTNode *p;	//求带权的路径的第二种方法：层次遍历
+	weightBTNode *queue[N_Node];
+	int rear = 0, front = 0;
+	int wpl = 0, deep = 0;//初始化wpl和深度
+	weightBTNode *lastNode;//记录当前层的最后一个节点
+	weightBTNode *newLastNode;//记录下一层的最后一个节点
+	lastNode = root;//初始化为根节点
+	newLastNode = NULL;//初始化为空
+	queue[++rear] = root;
+	while (rear != front) {
+		p = queue[++front];//出队
+		if (p->lchild == NULL && p->rchild == NULL)
+			wpl += deep*p->weight;
+		if (p->lchild) {
+			queue[++rear] = p->lchild;
+			newLastNode = p->lchild;//设下一层的最后一个节点为该节点的左节点
+		}
+		if (p->rchild) {
+			queue[++rear] = p->rchild;
+			newLastNode = p->rchild;//设下一层的最后一个节点为该节点的左节点
+		}
+		if (p == lastNode) {//若该节点为本层的最后一个节点，则更新lastNode
+			lastNode = newLastNode;
+			++deep;			//层数加1
+		}
+	}
+	return wpl;
+}
