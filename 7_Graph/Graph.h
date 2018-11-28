@@ -12,12 +12,12 @@
 #define CON_N -1
 #define F_END -1	//文件链表结尾标志
 
-typedef char V_type;
+typedef char Info_type;
 typedef float Value_Type;
 
 typedef struct VertexType {	//顶点
 	int no;//顶点编号
-	V_type info;//顶点信息，如顶点名称为‘A’
+	Info_type info;//顶点信息，如顶点名称为‘A’
 }VertexType;
 
 typedef struct MGraph {//图的邻接矩阵表示
@@ -44,12 +44,18 @@ typedef struct AGraph {//图的邻接表表示
 	int num_edge;//图中弧（边）总数
 }AGraph;
 
-
-
 void printErrorAndExit(const string &str);
 void Create_MGraph(MGraph *&mgraph, const string &str);
 void Print_MGraph_Matrix(MGraph *mgraph);
 void Create_AGraph(AGraph *&agraph, const string &str);
 void Print_AGraph_Matrix(AGraph *mgraph);
-
+void DFS(AGraph *agraph, int vertex, bool have_visited[]);
+void DFS2(AGraph *agraph, int vertex);
+void BFS(AGraph *agraph, int vertex, bool have_visited[]);
+int BFS_far(AGraph *agraph, int vertex);
+void DFS_NC(AGraph *agraph);
+void BFS_NC(AGraph *agraph);
+void DFS_istree(AGraph *agraph, int vertex, bool have_visited[], int &vn, int &en);
+void Graph_istree(AGraph *agraph);
+void BFS_Min_Distance(AGraph *agraph, int vertex);
 #endif // !graph_
