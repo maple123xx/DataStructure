@@ -12,7 +12,5 @@ void Heap_sort(int A[], int n);
 void Merge_sort(int A[], int low, int high);
 void Merge(int A[], int low, int mid, int high);
 
-
-
 #endif // !sort_base
 

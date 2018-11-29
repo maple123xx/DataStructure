@@ -16,7 +16,6 @@ int main() {
 	//Shell_sort(A, n);
 	//Bubble_sort(A, n);
 	//Quick_sort(A, 0, n - 1);
-	Heap_sort(A, n);
 	//Merge_sort(A, 0, n - 1);
 	for (i = 0; i < n; i++) {
 		cout << A[i] << "\t";

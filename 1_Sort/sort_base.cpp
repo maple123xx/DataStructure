@@ -33,6 +33,12 @@ void Insert_direct_sort(int A[], int n) {
 			}
 		}
 	}*/
+	/*for (int i = 0; i < n - 1; ++i) {
+		for (int j = i + 1; j < n; ++j) {
+			if (A[j] < A[i])
+				swap(A[j], A[i]);
+		}
+	}*/
 }
 
 //¼òµ¥Ñ¡ÔñÅÅÐò

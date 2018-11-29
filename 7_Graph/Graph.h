@@ -10,6 +10,7 @@
 #define CON_Y 1
 #define CON_SELF 0
 #define CON_N -1
+#define Infinity_big 9999
 #define F_END -1	//文件链表结尾标志
 
 typedef char Info_type;
@@ -44,6 +45,12 @@ typedef struct AGraph {//图的邻接表表示
 	int num_edge;//图中弧（边）总数
 }AGraph;
 
+typedef struct Road {
+	int begin;//边的起始点
+	int end;	//边的终点
+	Value_Type weight;	//边的权值
+}Road;
+
 void printErrorAndExit(const string &str);
 void Create_MGraph(MGraph *&mgraph, const string &str);
 void Print_MGraph_Matrix(MGraph *mgraph);
@@ -58,4 +65,8 @@ void BFS_NC(AGraph *agraph);
 void DFS_istree(AGraph *agraph, int vertex, bool have_visited[], int &vn, int &en);
 void Graph_istree(AGraph *agraph);
 void BFS_Min_Distance(AGraph *agraph, int vertex);
+Value_Type Prim(MGraph *mgraph, int v0);
+int sort_edge(Road road[], MGraph *mgraph);
+int getRoot(int a, int root[]);
+void Kruskal(MGraph *mgraph);
 #endif // !graph_

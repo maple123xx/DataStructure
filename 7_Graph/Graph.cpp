@@ -332,5 +332,95 @@ void BFS_Min_Distance(AGraph *agraph, int vertex) {
 		cout << distance[i] << '\t';
 	}
 }
+Value_Type Prim(MGraph *mgraph, int v0) {
+	//普里姆算法，求无向、连通图的最小生成树
+	//找与v0连接的最小权值（比如是v1），然后找与v0、v1连接的最小权值，以此类推
+	int i,k,choose,pre[N_matrix];//pre[N_matrix]是每一轮输出最小权值的弧尾，choose为每一轮选中的与pre连接的有最小权值的弧头
+	bool visited[N_matrix];//标记已经访问过的顶点
+	Value_Type sum=0, min,lowcost[N_matrix];//lowcost数组保存每一轮的权值，选出一个最小的，下一轮就更新lowcost数组
+	for (i = 1; i <= mgraph->num_node; ++i) {//初始化
+		visited[i] = false;
+		if (mgraph->edge[v0][i] > CON_SELF) {
+			lowcost[i] = mgraph->edge[v0][i];
+			pre[i] = v0;
+		}
+		else
+		{
+			lowcost[i] = Infinity_big;
+			pre[i] = -1;
+		}
+	}
+	visited[v0] = true;//访问第一个顶点
+	for (k = 1; k < mgraph->num_node; ++k) {
+		min = Infinity_big;
+		for (i = 1; i <= mgraph->num_node; ++i) {//找到第一轮的最小权值和顶点
+			if (visited[i] == false && min > lowcost[i]) {
+				min = lowcost[i];
+				choose = i;
+			}
+		}
+		cout << "(" << pre[choose] << "," << choose << ")" << '\t';
+		sum += min;
+		visited[choose] = true;//加入到已访问的顶点中
+		for (i = 1; i <= mgraph->num_node; ++i) {//更新lowcost和pre
+			if (visited[i] == false && mgraph->edge[choose][i] > CON_SELF && mgraph->edge[choose][i] < lowcost[i]) {
+				lowcost[i] = mgraph->edge[choose][i];
+				pre[i] = choose;
+			}
+		}
+	}
+	return sum;
+}
+int sort_edge(Road road[], MGraph *mgraph) {
+	//将矩阵的权值按从小到大排序
+	int i,j,k=0;
+	for (i = 1; i < mgraph->num_node; ++i) {
+		for (j = i + 1; j <= mgraph->num_node; ++j) {
+			if (mgraph->edge[i][j] > CON_SELF) {
+				road[k].begin = i;
+				road[k].end = j;
+				road[k].weight = mgraph->edge[i][j];
+				++k;
+			}
+		}
+	}
+	for (i = 0; i < k - 1; ++i) {//有k条有权值的边
+		for (j = i + 1; j < k; ++j) {
+			if (road[j].weight < road[i].weight)
+				std::swap(road[i],road[j]);
+		}
+	}
+	for (i = 0; i < k; ++i)
+		cout << road[i].weight << '\t';
+	return k;
+}
+int getRoot(int a, int root[]) {//并查集，查找某个元素的根并返回
+	while (root[a] != a)
+		a = root[a];
+	return a;
+}
+void Kruskal(MGraph *mgraph) {
+	//克鲁斯卡尔算法，求无向、连通图的最小生成树
+	//先将权值按从小到大排序，然后每次取一个边，若不构成回路，则加入
+	int i,a,b;
+	Value_Type sum = 0;
+	Road road[N_matrix];
+	int num_sorted = sort_edge(road, mgraph);//返回排序后有权值的边的总数
+	int root[N_road];
+	for (i = 1; i <= mgraph->num_node; ++i) {
+		root[i] = i;		//初始化一个并查集，root数组存储元素的根，初始化就是它自己
+	}
+	cout << "边访问的顺序为：" << endl;
+	for (i = 0; i < num_sorted; ++i) {
+		a = getRoot(road[i].begin, root);
+		b = getRoot(road[i].end, root);
+		if (a != b) {		//判断a,b这两个顶点的根是不是一样，若一样，再把这条边加入就会导致有回路
+			root[b] = a;	//把a赋值给b的根，使这两个顶点有相同的根
+			cout << "(" << road[i].begin << "," << road[i].end << ")" << '\t';//访问
+			sum += road[i].weight;
+		}
+	}
+	cout << "最小生成树的权值和为：" << sum << endl;
+}
 
 
