@@ -347,7 +347,7 @@ Value_Type Prim(MGraph *mgraph, int v0) {
 		else
 		{
 			lowcost[i] = Infinity_big;
-			pre[i] = -1;
+			pre[i] = CON_N;
 		}
 	}
 	visited[v0] = true;//访问第一个顶点
@@ -387,7 +387,7 @@ int sort_edge(Road road[], MGraph *mgraph) {
 	for (i = 0; i < k - 1; ++i) {//有k条有权值的边
 		for (j = i + 1; j < k; ++j) {
 			if (road[j].weight < road[i].weight)
-				std::swap(road[i],road[j]);
+				std::swap(road[i],road[j]);//不要只交换权值
 		}
 	}
 	for (i = 0; i < k; ++i)
@@ -421,6 +421,162 @@ void Kruskal(MGraph *mgraph) {
 		}
 	}
 	cout << "最小生成树的权值和为：" << sum << endl;
+}
+void Dijstra(MGraph *mgraph, int v0, Value_Type cost[], int pre[]) {
+	//迪杰斯特拉算法求带权连通图的单源最短路径（有向或无向都可以）
+	//若边上带有负权值，Dijstra算法失效
+	//求点v0到图中其余所有点的最短路径及距离
+	int i,j,k;
+	bool visited[N_list];
+	Value_Type min;
+	for (i = 1; i <= mgraph->num_node; ++i) {
+		visited[i] = false;				//初始化各数组
+		if (mgraph->edge[v0][i] > CON_SELF) {
+			cost[i] = mgraph->edge[v0][i];
+			pre[i] = v0;
+		}
+		else
+		{
+			cost[i] = Infinity_big;		//与v0无直接连接
+			pre[i] = CON_N;
+		}
+	}
+	visited[v0] = true;					//顶点v0已访问
+	for (i = 1; i < mgraph->num_node; ++i) {
+		min = Infinity_big;
+		for (j = 1; j <= mgraph->num_node; ++j) {
+			if (visited[j] == false && min > cost[j]) {	//求已访问点到剩余点的最短距离
+				min = cost[j];
+				k = j;
+			}
+		}
+		visited[k] = true;				//访问顶点k
+		for (j = 1; j <= mgraph->num_node; ++j) {
+			if (visited[j] == false && mgraph->edge[k][j] > CON_SELF && cost[j] > cost[k] + mgraph->edge[k][j]) {//mgra.edge[k][j]>CON_SELF重要
+				cost[j] = cost[k] + mgraph->edge[k][j];
+				pre[j] = k;
+			}
+		}
+	}
+}
+void Print_Dijstra(int obj, int pre[]) {
+	//打印从顶点v0到顶点obj的最短路径，迪杰斯特拉的子算法
+	int stack[N_matrix];
+	int i = obj, top = -1;
+	while (i != CON_N) {
+		stack[++top] = i;
+		i = pre[i];
+	}
+	cout << "从起点到终点的最短路径为" << endl;
+	while (top != -1)
+	{
+		cout << stack[top--] << '\t';
+	}
+	cout << endl;
+}
+void Dijstra_call(MGraph *mgraph, int v0, int obj) {//求v0到任意重点obj的最短路径
+	//调用迪杰斯特拉算法
+	if (v0<1 || v0>mgraph->num_node || obj<1 || obj>mgraph->num_node)
+	{
+		cout << "起点、终点的序号必须在1~mgra.num_node之间" << endl;
+		exit(1);
+	}
+	Value_Type cost[N_matrix];
+	int pre[N_matrix];
+	Dijstra(mgraph, v0, cost, pre);
+	Print_Dijstra(obj, pre);
+	cout << v0 << "到" << obj << "的最短路径为" << cost[obj] << endl;
+}
+void Floyd(MGraph *mgraph, int path[][N_matrix], Value_Type cost[][N_matrix]) {
+	//弗洛伊德算法求带权连通图的单源最短路径（有向或无向都可以）
+	//每次新加入一个顶点，看经过这个顶点，最短路径会不会变小
+	//Floyd算法允许图中带有负权值的边，但不允许有包含带负权值的边组成的回路
+	int i, j, k;
+	for (i = 1; i <= mgraph->num_node; ++i) {
+		for (j = 1; j <= mgraph->num_node; ++j) {
+			path[i][j] = CON_N;
+			if (mgraph->edge[i][j] > CON_SELF && i != j) {
+				cost[i][j] = mgraph->edge[i][j];
+			}
+			else if (i == j) {
+				cost[i][j] = CON_SELF;
+			}
+			else
+			{
+				cost[i][j] = Infinity_big;
+			}
+		}
+	}
+	for (k = 1; k <= mgraph->num_node; ++k) {
+		for (i = 1; i <= mgraph->num_node; ++i) {
+			for (j = 1; j <= mgraph->num_node; ++j) {
+				if (cost[i][j] > cost[i][k] + cost[k][j]) {
+					cost[i][j] = cost[i][k] + cost[k][j];
+					path[i][j] = k;
+				}
+			}
+		}
+	}
+}
+void Print_Floyd(int beg, int end, int path[][N_matrix]) {
+	//输出从顶点beg到顶点end的最短路径，弗洛伊德算法的子函数
+	if (path[beg][end] == CON_N) {
+		cout << "(" << beg << "," << end << ")" << '\t';
+		return;
+	}
+	Print_Floyd(beg, path[beg][end], path);
+	Print_Floyd(path[beg][end], end, path);
+}
+void Floyd_call(MGraph *mgraph, int beg, int end) {
+	if (beg<1 || beg>mgraph->num_node || end<1 || end>mgraph->num_node) {
+		cout << "输入顶点不合法" << endl;
+		return;
+	}
+	int path[N_matrix][N_matrix];
+	Value_Type cost[N_matrix][N_matrix];
+	Floyd(mgraph, path, cost);
+	Print_Floyd(beg, end, path);
+	cout << beg << "到" << end << "的最短路径为" << cost[beg][end] << endl;
+}
+bool Top_Sort(AGraph *agraph, int sorted[]) {
+	//有向无环图的拓扑排序
+	//首先找体格入度为0的顶点，然后删除它以及以它出发的边，接着找第二个入度为0的顶点，依此类推
+	int i, k, t = 0, sum_n = 0;//sum_n是已参加拓扑排序的顶点总数
+	int in[N_list] = {0};				//入度数组，初始化为0
+	int stack[N_list];
+	int top = -1;
+	Arc *p;
+	for (i = 1; i <= agraph->num_node; ++i) {
+		p = agraph->adjlist[i].first;
+		while (p) {
+			++in[p->adjvex.no];			//入度数组第一次更新
+			p = p->next;
+		}
+	}
+	for (i = 1; i <= agraph->num_node; ++i) {
+		if (in[i] == 0) {
+			stack[++top] = i;			//入度为0则入栈
+		}
+	}
+	while (top != -1) {
+		k = stack[top--];		//出栈
+		sorted[t++] = k;		//相当于访问
+		++sum_n;		//访问过，已参加拓扑排序的顶点总数+1
+		p = agraph->adjlist[k].first;
+		while (p) {
+			--in[p->adjvex.no];		//相当于删除由它引出的弧
+			if (in[p->adjvex.no] == 0) {	//入度为0就入栈
+				stack[++top] = p->adjvex.no;
+			}
+			p = p->next;
+		}
+	} 
+	if (sum_n == agraph->num_node) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }
 
 

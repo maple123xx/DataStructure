@@ -8,8 +8,8 @@
 #define N_queue 50			//循环队列的大小上限
 #define N_road 500			//图中边（弧）数量的上限
 #define CON_Y 1
-#define CON_SELF 0
-#define CON_N -1
+#define CON_SELF 0		//自己到自己
+#define CON_N -1	//无边连接
 #define Infinity_big 9999
 #define F_END -1	//文件链表结尾标志
 
@@ -69,4 +69,12 @@ Value_Type Prim(MGraph *mgraph, int v0);
 int sort_edge(Road road[], MGraph *mgraph);
 int getRoot(int a, int root[]);
 void Kruskal(MGraph *mgraph);
+void Dijstra(MGraph *mgraph, int v0, Value_Type cost[], int pre[]);
+void Print_Dijstra(int obj, int pre[]);
+void Dijstra_call(MGraph *mgraph, int v0, int obj);
+void Floyd(MGraph *mgraph, int path[][N_matrix], Value_Type cost[][N_matrix]);
+void Print_Floyd(int beg, int end, int path[][N_matrix]);
+void Floyd_call(MGraph *mgraph, int beg, int end);
+bool Top_Sort(AGraph *agraph, int sorted[]);
+
 #endif // !graph_
