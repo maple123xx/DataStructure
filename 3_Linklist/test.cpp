@@ -77,7 +77,7 @@ void Delete_X_2(PNODE pHead,int x) {//删除带头节点的链表中所有值为x的元素
 			p = p->next;
 		}
 	}*/
-	PNODE p = pHead->next, r = pHead, q;//方法二，用尾指针
+	PNODE p = pHead->next, r = pHead, q;//方法二，用尾插法，不等于x的节点接到后面
 	while (p)
 	{
 		if (p->data != x) {
@@ -93,13 +93,6 @@ void Delete_X_2(PNODE pHead,int x) {//删除带头节点的链表中所有值为x的元素
 		}
 	}
 	r->next = NULL;
-}
-void ReversePrint(PNODE pHead) {//用递归的方法逆序输出链表的值，也可以用栈实现
-	PNODE p = pHead->next;
-	if (p->next) {
-		ReversePrint(p);
-	}
-	cout << p->data << "\t";
 }
 void Delete_Min1(PNODE pHead) {//删除带头节点链表的最小值（假设唯一）
 	PNODE p = pHead->next;//工作指针
@@ -144,6 +137,24 @@ void Reverse_1(PNODE pHead) {//逆置链表
 	}
 	pHead->next = p;
 
+}
+void Reverse_2(PNODE pHead) {
+	//不修改链表，逆序输出链表的值
+	/*PNODE stack[100];	//利用栈
+	int top = -1;
+	PNODE p = pHead->next;
+	while (p) {
+		stack[++top] = p;
+		p = p->next;
+	}
+	while (top != -1) {
+		cout << stack[top--]->data << '\t';
+	}*/
+	PNODE p = pHead->next;//递归的输出
+	if (p->next) {
+		Reverse_2(p);
+	}
+	cout << p->data << "\t";
 }
 void SortList2(PNODE pHead) {//带头节点的排序,不同于第一个排序方法，这个是直接操作链表
 	PNODE p = pHead->next,pre;//采用直接插入的方法，先构成只含一个数据节点的有序单链表，然后依次扫描单链表中剩下的节点插入进来
@@ -651,10 +662,13 @@ int main() {
 	//PrintList2(L);
 	//Delete_X_3(L, 1);
 	//PrintList2(L);
-	//NODE L;
-	//InitList(&L);
-	//CreateList(&L);
-	//PrintList(&L);
+	NODE L;
+	InitList(&L);
+	CreateList(&L);
+	PrintList(&L);
+	ReversePrint(&L);
+	cout << endl;
+	Reverse_2(&L);
 	//Del_Same(&L);
 	//PrintList(&L);
 	//NODE A, B;
@@ -693,11 +707,11 @@ int main() {
 	CreateList(&pHead);
 	Search_K(&pHead,3);*/
 
-	const string str = "data\\test_5.txt";
+	/*const string str = "data\\test_5.txt";
 	DNODE A;
 	InitList4(&A);
 	CreateList4_2(str, &A);
-	PrintList4(&A);
+	PrintList4(&A);*/
 	//Symmetry(&A);
 
 	/*NODE pHead;

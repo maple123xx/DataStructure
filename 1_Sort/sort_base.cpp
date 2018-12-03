@@ -114,7 +114,6 @@ void Quick_sort(int A[], int left,int right) {
 	A[i] = temp;//现在i的位置就是基准应该在的位置，左边的都比基准小，右边的都比基准大
 	Quick_sort(A, left, i - 1);
 	Quick_sort(A, i + 1, right);
-
 }
 
 //堆排序（升序排序要建大顶堆）

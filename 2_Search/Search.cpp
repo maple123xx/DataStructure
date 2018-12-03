@@ -1,5 +1,10 @@
 #include"Search.h"
 
+void printErrorAndExit(const string &str)
+{
+	cout << "There is an error in " + str + " ! " << endl;
+	exit(1);
+}
 int Sequence_Search(ValueType A[], int n,ValueType key) {
 	//顺序查找，数组A[]下标从1开始。对线性的链表只能顺序，查找
 	//还有一种是有序表的顺序查找，当A[i]>key,A[i+1]<key时，就不用继续往后找了，有序表的顺序查找的思想和二分查找是不一样的
@@ -46,6 +51,63 @@ int Bin_Search2(ValueType A[], ValueType obj, int low, int high) {
 		}
 	}
 	return 0;	//没找到，返回0，这个很重要
+}
+void Init_Hash(HashTable *H, int size) {
+	//初始化散列表
+	H->size = size;
+	H->data = (ValueType *)malloc(size*sizeof(ValueType));
+	for (int i = 0; i < size; ++i) {
+		H->data[i] = NULLKEY;
+	}
+}
+int Hash(HashTable H, ValueType key) {
+	//散列函数
+	return key % 13;	//除留取余法
+}
+bool Insert_Hash(HashTable *H, const string &str) {
+	//把关键字插入散列表中
+	try
+	{
+		int i, addr, num_data;//num_data是关键值个数
+		ValueType key;
+		ifstream ins(str);
+		if (!ins) { throw exception(); }
+		ins >> num_data;
+		if (num_data < 1) { throw exception(); }
+		for (i = 1; i <= num_data; ++i) {
+			ins >> key;
+			addr = Hash(*H, key);			//求散列地址
+			while (H->data[addr] != NULLKEY) {	//不为空则冲突
+				addr = (addr + 1) % H->size;//开放定址法的线性探测
+				if (addr == Hash(*H, key)) {
+					return false;	//寻找下一个空位置，一直找了一圈又找回来，都满了
+				}
+			}
+			H->data[addr] = key;//直到有空位置了插入
+		}
+		
+	}
+	catch (...)
+	{
+		printErrorAndExit("Insert_Hash");
+	}
+	return true;
+}
+bool Search_Hash(HashTable H, ValueType key, int &addr) {
+	//散列表查找关键字
+	//查找成功返回TRUE，失败返回FALSE
+	//若查找成功，addr存储其位置
+	addr = Hash(H, key);
+	if (H.data[addr] == NULLKEY)
+		return false;		//散列地址为空
+	while (H.data[addr] != key) {
+		addr = (addr + 1) % H.size;
+		if (H.data[addr] == NULLKEY || addr == Hash(H, key)) {
+			return false;		//下一个散列地址为空说明肯定不存在这个地址了，或者循环回到原点也说明不存在
+			//H.data[addr] = key;//或者当为没找到的时候，就把这个关键字插入
+		}
+	}
+	return true;
 }
 
 //生成斐波那契数列，数列的最后一个元素大于或者等于n
