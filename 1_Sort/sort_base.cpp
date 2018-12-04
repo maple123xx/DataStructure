@@ -9,15 +9,14 @@ using namespace std;
 //	b=temp;
 //}
 
-//直接插入排序，或者叫交换排序
+//直接插入排序
 void Insert_direct_sort(int A[], int n) {
 	int i, j;
 	int temp;
 	for (i = 1; i < n; ++i) {//从A[1]作为要插入的第一个元素开始
 		temp = A[i];//保存要插入的元素，每次都和它比，比如它是最小的元素，一定要比较到它插到A[0]位置
 		for (j = i; j > 0 && A[j - 1] > temp; --j) {	//内循环跳出的条件是A[j - 1] > temp不满足时
-			A[j] = A[j - 1];//不要怕覆盖A[i],已经用temp保存A[i]的值了
-			
+			A[j] = A[j - 1];//不要怕覆盖A[i],已经用temp保存A[i]的值了		
 		}
 		//for (j = i; j > 0; --j) {	
 		//	if (A[j - 1] > temp) {	//内循环跳出的条件是A[j - 1] > temp不满足时,如果在这里判断的话，每次temp都会插到A[0]位置，程序错误
@@ -40,19 +39,49 @@ void Insert_direct_sort(int A[], int n) {
 		}
 	}*/
 }
-
-//简单选择排序
-void Select_sort(int A[], int n) {
-	int i, j, k;
-	for (i = 0; i < n - 1; ++i) {
-		k = i;//k用来记录最小值的位置
-		for (j = i + 1; j < n; ++j) {
-			if (A[j] < A[k]) {
-				k = j;
+//折半插入排序
+void Bi_Insert_Sort(int A[], int n) {//先折半的找到要插入的位置，再插入
+	for (int i = 1; i < n; ++i) {
+		int temp = A[i];
+		int low = 0, high = i - 1;
+		while (low <= high) {
+			int mid = (low + high) / 2;
+			if (A[mid] > temp)
+				high = mid - 1;
+			else
+				low = mid + 1;
+		}
+		for (int j = i - 1; j >= high + 1; --j) {
+			A[j + 1] = A[j];
+		}
+		A[high + 1] = temp;
+	}
+}
+//希尔排序
+//希尔排序就是直接插入排序的高级版，将数组按增量分组，然后分别做直接插入排序，逐渐缩小增量
+void Shell_sort(int A[], int n) {
+	int i, j, increment = n;
+	//int temp;
+	/*do {
+	increment = increment / 3 + 1;
+	for (i = increment; i < n; ++i) {
+	temp = A[i];
+	for (j = i; j >= increment && A[j - increment]>temp; j -= increment) {	//这里的判断条件和直接插入排序有点区别，是>=,不然一次循环也进不去
+	A[j] = A[j - increment];
+	}
+	A[j] = temp;
+	}
+	} while (increment > 1);*/
+	do {	//与直接插入排序一样，希尔排序也有两种排序方法
+		increment = increment / 3 + 1;
+		for (i = increment; i < n; ++i) {
+			for (j = i; j >= increment; j -= increment) {
+				if (A[j] < A[j - increment]) {
+					swap(A[j], A[j - increment]);
+				}
 			}
 		}
-		swap(A[k], A[i]);//把最小值放在i的位置
-	}
+	} while (increment > 1);
 }
 
 //冒泡排序
@@ -66,36 +95,7 @@ void Bubble_sort(int A[], int n) {
 		}
 	}
 }
-
-//希尔排序
-//希尔排序就是直接插入排序的高级版，将数组按增量分组，然后分别做直接插入排序，逐渐缩小增量
-void Shell_sort(int A[], int n) {
-	int i, j, increment=n;
-	//int temp;
-	/*do {
-		increment = increment / 3 + 1;
-		for (i = increment; i < n; ++i) {
-			temp = A[i];
-			for (j = i; j >= increment && A[j - increment]>temp; j -= increment) {	//这里的判断条件和直接插入排序有点区别，是>=,不然一次循环也进不去
-				A[j] = A[j - increment];
-			}
-			A[j] = temp;
-		}
-	} while (increment > 1);*/
-	do {	//与直接插入排序一样，希尔排序也有两种排序方法
-		increment = increment / 3 + 1;
-		for (i = increment; i < n; ++i) {
-			for (j = i; j >= increment; j -= increment) {	
-				if (A[j] < A[j - increment]) {
-					swap(A[j], A[j - increment]);
-				}
-			}
-		}
-	} while (increment > 1);
-}
-
-//快速排序
-//对冒泡排序的一种改进
+//快速排序：对冒泡排序的一种改进
 void Quick_sort(int A[], int left,int right) {
 	int i = left, j = right;
 	if (left>=right)//！！！非常重要，递归的终止条件
@@ -116,6 +116,19 @@ void Quick_sort(int A[], int left,int right) {
 	Quick_sort(A, i + 1, right);
 }
 
+//简单选择排序
+void Select_sort(int A[], int n) {
+	int i, j, k;
+	for (i = 0; i < n - 1; ++i) {
+		k = i;//k用来记录最小值的位置
+		for (j = i + 1; j < n; ++j) {
+			if (A[j] < A[k]) {
+				k = j;
+			}
+		}
+		swap(A[k], A[i]);//把最小值放在i的位置
+	}
+}
 //堆排序（升序排序要建大顶堆）
 //1. 从第最后一个非叶节点（A[n/2-1]）开始，逐渐往上到根建立大顶堆
 //2. 交换堆顶元素和最末尾元素，调整堆
@@ -130,7 +143,6 @@ void Heap_sort(int A[], int n) {
 	}
 
 }
-
 //调整堆
 void AdjustHeap(int A[], int i, int n) {//
 	int k=2*i+1;//i表示当前要调整的节点，k是当前节点的左孩子
@@ -154,7 +166,7 @@ void AdjustHeap(int A[], int i, int n) {//
 }
 
 //二路归并排序
-//利用递归，将原始序列不断两两分块，知道每块剩下一个元素，这个元素肯定是有序的。然后利用递归的原理合并即可
+//利用递归，将原始序列不断两两分块，直到每块剩下一个元素，这个元素肯定是有序的。然后利用递归的原理合并即可
 void Merge_sort(int A[], int low, int high) {
 	if (low < high) {//重要，递归终止条件
 		int mid = (low + high) / 2;
@@ -162,9 +174,7 @@ void Merge_sort(int A[], int low, int high) {
 		Merge_sort(A, mid + 1, high);
 		Merge(A,low, mid, high);
 	}
-	
 }
-
 //将前后相邻的两个有序表合并为一个有序表
 void Merge(int A[],int low, int mid, int high) {
 	int i, j, k;

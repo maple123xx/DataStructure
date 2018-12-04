@@ -17,6 +17,7 @@ int main() {
 	//Bubble_sort(A, n);
 	//Quick_sort(A, 0, n - 1);
 	//Merge_sort(A, 0, n - 1);
+	Bi_Insert_Sort(A, 12);
 	for (i = 0; i < n; i++) {
 		cout << A[i] << "\t";
 	}
