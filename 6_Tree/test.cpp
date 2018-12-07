@@ -35,16 +35,16 @@ int main() {
 	//PostOrder(root);
 	//cout << endl;
 	/*ElemType *pre = "ABCDEFG";
-	ElemType post[100]="";
+	ElemType post[100];
 	PreToPost(pre, 0, 6, post, 0, 6);
 	for (int i = 0; i <= 6; ++i) {
 		cout << post[i] << '\t';
 	}
 	cout << endl;*/
-
-	const string str2 = "data\\weight_7.txt";
-	weightBTNode *root = CreateWeightTree(str2);
-	//cout << "带权路径长度为" <<WPL(root)<< endl;
-	cout << "带权路径长度为" << wpl_LevelOrder(root) << endl;
+	PrintLeaf(p1);
+	//const string str2 = "data\\weight_7.txt";
+	//weightBTNode *root = CreateWeightTree(str2);
+	////cout << "带权路径长度为" <<WPL(root)<< endl;
+	//cout << "带权路径长度为" << wpl_LevelOrder(root) << endl;
 	return 0;
 }

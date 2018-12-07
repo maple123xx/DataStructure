@@ -666,7 +666,6 @@ int main() {
 	InitList(&L);
 	CreateList(&L);
 	PrintList(&L);
-	ReversePrint(&L);
 	cout << endl;
 	Reverse_2(&L);
 	//Del_Same(&L);

@@ -546,25 +546,41 @@ BTNode *PreInCreate(ElemType A[], ElemType B[], int l1, int h1, int l2, int h2) 
 
 }
 void PreToPost(ElemType pre[], int l1, int h1, ElemType post[], int l2, int h2) {
-	int half;//知道一颗满二叉树的先序遍历，求其后序遍历    有问题
-	while (h1>=l1) {
+	int half;//知道一颗满二叉树的先序遍历，求其后序遍历
+	if (h1>=l1) {
 		post[h2] = pre[l1];
 		half = (h1 - l1) / 2;
 		PreToPost(pre, l1 + 1, l1 + half, post, l2, l2 + half - 1);
 		PreToPost(pre, l1 + half + 1, h1, post, l2 + half, h2 - 1);
 	}
 }
-//LinkList InOrderLeaf(BTNode *root) {		//有问题
-//	if (root) {
-//		InOrderLeaf(root->lchild);
-//		if (root->lchild == NULL && root->rchild == NULL) {
-//			if (pre == NULL) {
-//				head = root;
-//				pre = root;
-//			}
-//		}
-//	}
-//}
+LinkedList head, p = NULL;
+LinkedList InOrderLeaf(BTNode *root) {//将二叉树的叶子用右指针串起来
+	if (root) {
+		InOrderLeaf(root->lchild);
+		if (root->lchild == NULL && root->rchild == NULL) {
+			if (p == NULL) {
+				head = root;
+				p = root;
+			}
+			else {
+				p->rchild = root;
+				p = root;
+			}
+		}
+		InOrderLeaf(root->rchild);
+		p->rchild = NULL;
+	}
+	return head;
+
+}
+void PrintLeaf(BTNode *root) {
+	LinkedList pHead = InOrderLeaf(root);
+	while (pHead) {
+		cout << pHead->data << '\t';
+		pHead = pHead->rchild;
+	}
+}
 
 
 weightBTNode* CreateWeightTree(const string &str) {//建一颗带权路径树，相当于把树的节点信息变为权值，其他不变

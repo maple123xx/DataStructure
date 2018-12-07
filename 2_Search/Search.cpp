@@ -52,6 +52,27 @@ int Bin_Search2(ValueType A[], ValueType obj, int low, int high) {
 	}
 	return 0;	//没找到，返回0，这个很重要
 }
+int Bin_Search3(ValueType A[], ValueType obj, int low, int high) {
+	//二分查找变体：适合数组比较大，元素分布均匀的情况
+	int mid;
+	while (low <= high) {
+		if (low < high) {
+			mid = (float)(low + (float)(obj - A[low]) / (A[high] - A[low])*(high - low));//按比例来查找
+			if (mid<low || mid>high)		//当obj<A[low]时，mid可能为负
+				mid = (low + high) / 2;
+		}
+		else
+			mid = low;
+		if (obj == A[mid])
+			return mid;
+		else if (obj < A[mid])
+			high = mid - 1;
+		else
+			low = mid + 1;
+	}
+	cout << "没找到" << endl;
+	return 0;
+}
 void Init_Hash(HashTable *H, int size) {
 	//初始化散列表
 	H->size = size;
@@ -123,43 +144,38 @@ int Fibonacci(int A[], int n)
 	}
 	return k;
 }
-
 //数组A[]下标从1开始
 //n为待查找数组含有元素的个数，key为需要查找的关键字
 int Fibonacci_search(ValueType A[], int n, ValueType key)
-{
+{	//n=F(k)-1， 表中记录的个数为某个斐波那契数小1。这是为什么呢？
+	//是为了格式上的统一，以方便递归或者循环程序的编写。表中的数据是F(k)-1个，使用mid值进行分割又用掉一个，
+	//那么剩下F(k)-2个。正好分给两个子序列，每个子序列的个数分别是F(k-1)-1与F(k-2)-1个，格式上与之前是统一的。
 	int i, k;
 	int F[N_Node];
-	k = Fibonacci(F, n + 1);		//斐波那契数列的最后一个元素大于或等于n+1
-	int low = 1, high = F[k] - 1, mid;
-	for (i = n + 1; i <= F[k] - 1; ++i)
-	{
-		A[i] = A[n];			//将不满的数值补全
+	k = Fibonacci(F, n);
+	int low = 1, high = F[k] - 1,mid;//第0个元素没有算
+	for (i = n + 1; i <= F[k] - 1; ++i) {
+		A[i] = A[n];
 	}
-	while (low <= high)
-	{
-		mid = low + F[k - 1] - 1;		//计算当前分隔下标
+	while (low <= high) {
+		mid = low + F[k - 1] - 1;//根据上面的解释就可以知道为什么mid是这样了
 		if (key == A[mid])
 		{
 			if (mid <= n)
-			{
-				return mid;		//mid即为查找到的位置
-			}
+				return mid;
 			else
-			{
-				return n;		//说明是补全数组
-			}
+				return n;
 		}
-		else if (key<A[mid])
-		{
+		else if (key < A[mid]) {
 			high = mid - 1;
-			--k;			//斐波那契数列下标减1
+			k -= 1;		//落到左半部分
 		}
-		else
-		{
+		else {
 			low = mid + 1;
-			k = k - 2;			//斐波那契数列下标减2
+			k -= 2;		//落到右半部分
 		}
 	}
+	cout << "没找到" << endl;
 	return 0;
+
 }

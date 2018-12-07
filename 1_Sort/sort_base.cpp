@@ -95,7 +95,42 @@ void Bubble_sort(int A[], int n) {
 		}
 	}
 }
-//快速排序：对冒泡排序的一种改进
+//改进的冒泡排序
+void Bubble_sort2(int A[], int n) {
+	for (int i = 0; i < n - 2; ++i) {
+		bool flag = false;	//发生交换的标志，若一趟下来没有交换，说明已经排好了
+		for (int j = n - 1; j > i; --j) {
+			if (A[j] < A[j - 1]) {
+				swap(A[j], A[j - 1]);
+				flag = true;
+			}
+		}
+		if (!flag)
+			return;
+	}
+}
+//双向冒泡
+void Bubble_sort3(int A[], int n) {
+	int i,j,low = 0, high = n - 1;
+	bool flag = true;
+	while (low < high&&flag) {
+		flag = false;
+		for (i = low; i < high; ++i) {
+			if (A[i] > A[i + 1]) {
+				swap(A[i], A[i + 1]);
+				flag = true;	//还存在交换
+			}
+		}
+		--high;
+		for (j = high; j > low; --j) {
+			if (A[j] < A[j - 1]) {
+				swap(A[j], A[j - 1]);
+				flag = true;
+			}
+		}
+		++low;
+	}
+}
 void Quick_sort(int A[], int left,int right) {
 	int i = left, j = right;
 	if (left>=right)//！！！非常重要，递归的终止条件

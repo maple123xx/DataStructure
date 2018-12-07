@@ -2,17 +2,19 @@
 #define Tree_
 
 #include"myNamespace.h"
-typedef int ElemType;
+typedef char ElemType;
 typedef struct BTNode {
 	ElemType data;
 	//int ltag, rtag;		//为0代表指向孩子，为1代表指向线索
 	struct BTNode *lchild, *rchild;
-}BTNode,*BTree;
+}BTNode,*BTree,*LinkedList;
 
 typedef struct BT_Width {//求数的宽度时定义的一个结构体，用来定义队列
 	BTNode *t_node;
 	int num_level;	//节点所在的层次
 }BT_Width;
+
+
 
 #define N_Node 100 //结点数量，比树中结点数量上限大1
 #define N_lev 10 //树的深度上限
@@ -52,6 +54,9 @@ void PreToPost(ElemType pre[], int l1, int h1, ElemType post[], int l2, int h2);
 //} *LinkList;
 //LinkList head, pre = NULL;
 //LinkList InOrderLeaf(BTNode *root);
+
+LinkedList InOrderLeaf(BTNode *root);
+void PrintLeaf(BTNode *root);
 
 typedef struct weightBTNode {
 	int weight;

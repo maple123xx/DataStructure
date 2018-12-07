@@ -8,6 +8,8 @@ void Bi_Insert_Sort(int A[], int n);
 void Shell_sort(int A[], int n);
 //Ωªªª≈≈–Ú
 void Bubble_sort(int A[], int n);
+void Bubble_sort2(int A[], int n);
+void Bubble_sort3(int A[], int n);
 void Quick_sort(int A[], int low,int high);
 //—°‘Ò≈≈–Ú
 void Select_sort(int A[], int n);
