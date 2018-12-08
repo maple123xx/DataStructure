@@ -540,7 +540,7 @@ void Floyd_call(MGraph *mgraph, int beg, int end) {
 }
 bool Top_Sort(AGraph *agraph, int sorted[]) {
 	//有向无环图的拓扑排序
-	//首先找体格入度为0的顶点，然后删除它以及以它出发的边，接着找第二个入度为0的顶点，依此类推
+	//首先找一个入度为0的顶点，然后删除它以及以它出发的边，接着找第二个入度为0的顶点，依此类推
 	int i, k, t = 0, sum_n = 0;//sum_n是已参加拓扑排序的顶点总数
 	int in[N_list] = {0};				//入度数组，初始化为0
 	int stack[N_list];
@@ -577,6 +577,97 @@ bool Top_Sort(AGraph *agraph, int sorted[]) {
 	else {
 		return false;
 	}
+}
+bool TopSort_Critical(AGraph *agraph, Value_Type ve[], int stack2[], int &top2) {
+	//适用于求有向图的关键路径的拓扑排序
+	//结果保存在栈stack2[]中，下标从0开始，对stack2[]进行出栈操作能得到逆拓扑排序
+	//事件的最早发生时间保存在数组ve[]中
+	//拓扑排序成功则返回true，否则返回false
+	top2 = -1;
+	int i,k,sum_n=0;
+	Arc *p;
+	int in[N_list];
+	int stack1[N_list];
+	int top1 = -1;
+	for (i = 1; i <= agraph->num_node; ++i) {
+		in[i] = 0;			//初始化入度
+		ve[i] = 0;			//初始化事件最早发生时间
+	}
+	for (i = 1; i <= agraph->num_node; ++i) {
+		p = agraph->adjlist[i].first;
+		while (p) {
+			++in[p->adjvex.no];
+			p = p->next;
+		}
+	}
+	for (i = 1; i < agraph->num_node; ++i) {
+		if (in[i] == 0)
+			stack1[++top1] = i;
+	}
+	while (top1 != -1) {
+		k = stack1[top1--];
+		stack2[++top2] = k;
+		++sum_n;				//已参加拓扑排序的顶点总数
+		p = agraph->adjlist[k].first;
+		while (p) {
+			if (ve[k] + p->weight > ve[p->adjvex.no])//求每个事件的最早发生时间
+				ve[p->adjvex.no] = ve[k] + p->weight;
+			--in[p->adjvex.no];
+			if (in[p->adjvex.no] == 0)
+				stack1[++top1] = p->adjvex.no;
+			p = p->next;
+		}
+	}
+	if (sum_n == agraph->num_node)
+		return true;
+	else
+		return false;
+}
+Value_Type max_ve(Value_Type ve[], int n) {//求最大值
+	Value_Type max = -9999;
+	for (int i = 1; i <= n; ++i) {
+		if (ve[i] > max)
+			max = ve[i];
+	}
+	return max;
+}
+void Critical_Path(AGraph *agraph) {
+	int i, k;
+	Arc *p;
+	Value_Type min, ve[N_list], vl[N_list];//ve是最早开始时间的数组，vl是最迟开始时间的数组
+	Value_Type e, l;
+	int stack2[N_list];
+	int top2 = -1;
+	if (!TopSort_Critical(agraph, ve, stack2, top2)) {
+		cout << "图中有回路，拓扑排序失败！" << endl;
+		exit(0);
+	}
+	min = max_ve(ve, agraph->num_node);
+	for (i = 1; i <= agraph->num_node; ++i) {
+		vl[i] = min;		//初始化事件最晚发生时间为事件最早发生时间的最大值
+	}
+	while (top2 != -1) {
+		k = stack2[top2--];		//从最后一个事件开始
+		p = agraph->adjlist[k].first;
+		while(p){
+			if (vl[p->adjvex.no] - p->weight < vl[k]) {//求事件的最迟发生时间
+				vl[k] = vl[p->adjvex.no] - p->weight;
+			}
+			p = p->next;
+		}
+	}
+	for (i = 1; i <= agraph->num_node; ++i) {
+		p = agraph->adjlist[i].first;
+		while (p) {
+			e = ve[i];		//活动最早开始时间
+			l = vl[p->adjvex.no]-p->weight;	//活动最晚开始时间
+			if (e == l) {	//e和l相等的是关键活动
+				cout << "(" << i << "," << p->adjvex.no << ")" << "是关键活动" << endl;
+			}
+			p = p->next;
+		}
+	}
+	cout << endl;
 }
 
 

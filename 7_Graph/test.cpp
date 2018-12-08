@@ -6,7 +6,7 @@ int main() {
 	Create_MGraph(mgraph, str);
 	Print_MGraph_Matrix(mgraph);
 	cout << endl;*/
-	const string str1 = "data\\AGraph_05_5.txt";
+	const string str1 = "data\\AGraph_05_6.txt";
 	AGraph *agraph = (AGraph *)malloc(sizeof(AGraph));
 	Create_AGraph(agraph, str1);
 	Print_AGraph_Matrix(agraph);
@@ -22,7 +22,7 @@ int main() {
 	//Kruskal(mgraph);
 	//Dijstra_call(mgraph, 2, 4);
 	//Floyd_call(mgraph, 2, 4);
-	int i;
+	/*int i;
 	int sorted[N_list] = {0};
 	bool a = Top_Sort(agraph, sorted);
 	if (a == true) {
@@ -31,9 +31,9 @@ int main() {
 			cout << sorted[i] << '\t';
 		}
 	}
-	else
-	{
+	else{
 		cout << "ÅÅÐòÊ§°Ü£¬ÓÐ»ØÂ·" << endl;
-	}
+	}*/
+	Critical_Path(agraph);
 	return 0;
 }

@@ -76,5 +76,8 @@ void Floyd(MGraph *mgraph, int path[][N_matrix], Value_Type cost[][N_matrix]);
 void Print_Floyd(int beg, int end, int path[][N_matrix]);
 void Floyd_call(MGraph *mgraph, int beg, int end);
 bool Top_Sort(AGraph *agraph, int sorted[]);
+bool TopSort_Critical(AGraph *agraph, Value_Type ve[], int stack2[], int &top);
+Value_Type max_ve(Value_Type ve[], int n);
+void Critical_Path(AGraph *agraph);
 
 #endif // !graph_
