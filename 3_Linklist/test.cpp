@@ -1,5 +1,10 @@
 #include"Linklist.h"
 
+void printErrorAndExit(const string &str)
+{
+	cout << "There is an error in " + str + " ! " << endl;
+	exit(1);
+}
 void InitList2(PNODE &L) {//不带头节点的单链表初始化，用&L可以取到PNODE L定义的指针的地址，从而达到传地址而不是传值的目的
 	L = NULL;
 	cout << "初始化成功"<< endl;
@@ -649,10 +654,35 @@ void Symmetry(DPNODE pHead) {//判断循环双链表是否是对称的
 	return;
 }
 
-void printErrorAndExit(const string &str)
-{
-	cout << "There is an error in " + str + " ! " << endl;
-	exit(1);
+void SelectSort(PNODE pHead) {
+	//选择排序，每次选一个最大的头插到头节点后
+	PNODE p, pre, maxp, maxpre;
+	PNODE  q = pHead->next;
+	pHead->next = NULL;	//把头节点和后面断开
+	while (q) {
+		maxpre = NULL, pre = NULL;
+		maxp = q, p = q;
+		while (p) {
+			if (p->data > maxp->data) {
+				maxpre = pre;
+				maxp = p;
+			}
+			pre = p;
+			p = p->next;
+		}
+		if (maxp == q)	//最大值节点在第一个位置
+			q = q->next;
+		else
+			maxpre->next = maxp->next;	//否则把最大值节点摘下来
+		maxp->next = pHead->next;	//头插到链表中
+		pHead->next = maxp;
+	}
+	p = pHead->next;
+	while (p) {
+		cout << p->data << '\t';
+		p = p->next;
+	}
+	cout << endl;
 }
 
 int main() {
@@ -667,7 +697,8 @@ int main() {
 	CreateList(&L);
 	PrintList(&L);
 	cout << endl;
-	Reverse_2(&L);
+	//Reverse_2(&L);
+	SelectSort(&L);
 	//Del_Same(&L);
 	//PrintList(&L);
 	//NODE A, B;
