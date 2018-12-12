@@ -17,6 +17,29 @@ void MoveEven_Odd(int A[], int n) {//把所有奇数挪到偶数前面
 		--high;
 	}
 }
+//写成函数指针形式，便于代码重用
+void Reorder(int A[], int n, bool (*func)(int)) {
+	int low = 0, high = n - 1;
+	while (low < high) {
+		while (low < high&&!func(A[low]))	//!func(A[low])表示func(A[low])是0的话，就进入
+			++low;
+		while (low < high&&func(A[high]))
+			--high;
+		if (low<high)
+			swap(A[low], A[high]);
+		++low;
+		--high;
+	}
+}
+bool isEven(int n) {	//是偶数，返回0，是奇数，返回1
+	return (n & 1)==0;
+}
+bool isMinus(int n) {	//是负数，返回0
+	return (n>0);
+}
+void MoveEven_Odd2(int A[], int n) {
+	Reorder(A, n, isMinus);
+}
 int K_Element(int A[], int low, int high, int k) {
 	//找到排序后的第k小的数，可以用一个O(nlogn)的排序算法排序，然后直接找到第k个元素
 	//本题用快速排序的方法
@@ -112,8 +135,8 @@ int main() {
 	clock_t finish;
 	start = clock();
 	int i, n = 9;
-	int A[] = { 53, 3, 542, 748, 14, 214, 154, 63, 616 };
-	RadixSort(A, n);
+	int A[] = { -3, 3, 542, 748, -6, 214, -5, 63, 616 };
+	//RadixSort(A, n);
 	/*int A[N_array] = { 45,21,35,23,4,56,15,32,11,6,100,79,1};
 	int B[N_array];
 	List C[N_array];
@@ -141,7 +164,7 @@ int main() {
 	//Quick_sort2(A, 0, n - 1);
 	//Merge_sort(A, 0, n - 1);
 	//Bi_Insert_Sort(A, 12);
-	//MoveEven_Odd(A, n);
+	MoveEven_Odd2(A, n);
 	//cout << setPartition(A, 12) << endl;
 	for (i = 0; i < n; i++) {
 		cout << A[i] << "\t";

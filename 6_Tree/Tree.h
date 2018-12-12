@@ -2,11 +2,12 @@
 #define Tree_
 
 #include"myNamespace.h"
-typedef char ElemType;
+typedef int ElemType;
 typedef struct BTNode {
 	ElemType data;
 	//int ltag, rtag;		//为0代表指向孩子，为1代表指向线索
 	struct BTNode *lchild, *rchild;
+	int count;		//给二叉树增设一个count成员，存储以该节点为根的子树的节点个数，二叉排序树的时候用到了
 }BTNode,*BTree,*LinkedList;
 
 typedef struct BT_Width {//求数的宽度时定义的一个结构体，用来定义队列
@@ -30,16 +31,20 @@ void PostOrder(BTNode *root);
 int getDepth(BTNode *root);
 int getDepth2(BTNode *root);
 void LevelOrder(BTNode *root);
-void PreOrder2(BTNode *root); 
+void PreOrder2(BTNode *root);
+void Print_Road(BTNode *root, int x);
 void InOrder2(BTNode *root);
 void PostOrder2(BTNode *root);
 void InverseLevel(BTNode *root);
 void IsComplete(BTNode *root);
 int DoubleSonNodes(BTNode *root);
+int NoSonNodes(BTNode *root);
+int SingleSonNodes(BTNode *root);;
 void SwapTree(BTNode *root);
 ElemType PreKNode(BTNode *root,int k);
 void DeleteXTree(BTNode *root);
 void DeleteX(BTNode *root, ElemType x);
+void DeleteLeaf(BTNode *&root);
 void SearchX(BTNode *root, ElemType x);
 BTNode *Search1(BTNode *root, ElemType x);
 BTNode *CommonAncestor(BTNode *root, BTNode *p, BTNode *q);
@@ -47,13 +52,26 @@ int BTwidth(BTNode *root);
 int Similar(BTNode *root1, BTNode *root2);
 BTNode *PreInCreate(ElemType A[], ElemType B[], int l1, int h1, int l2, int h2);
 void PreToPost(ElemType pre[], int l1, int h1, ElemType post[], int l2, int h2);
+void Level_X(BTNode *root, int x,int L,int *res);
+int Level_X2(BTNode *root, int x);
+void PreValue_Level(BTNode *root, int L);
 
-//typedef struct LinkList {
-//	ElemType data;
-//	struct LinkList *rchild;
-//} *LinkList;
-//LinkList head, pre = NULL;
-//LinkList InOrderLeaf(BTNode *root);
+
+void Create_BST(BTNode *&root, ElemType str[], int n);
+bool BST_Insert(BTNode *&root, ElemType key);
+bool BST_Delete_Core(BTNode *&root);
+bool BST_Delete(BTNode *&root, ElemType key);
+BTNode *SearchBST(BTNode *root, ElemType key, BTNode *&p);
+bool SearchBST2(BTNode *root, ElemType key, BTNode *&parent, BTNode *&p);
+bool JudgeBST1(BTNode *root);
+bool JudgeBST2(BTNode *root);
+int BST_Level(BTNode *root, ElemType key);
+void MinKey(BTNode *root);
+void MaxKey(BTNode *root);
+void Output_Max_K(BTNode *root, ElemType k);
+int Count_Node(BTNode *root);
+BTNode* Number_K(BTNode *root, int k);
+
 
 LinkedList InOrderLeaf(BTNode *root);
 void PrintLeaf(BTNode *root);

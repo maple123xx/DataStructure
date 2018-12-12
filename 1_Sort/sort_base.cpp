@@ -216,7 +216,7 @@ void AdjustHeap(int A[], int i, int n) {//
 //插入元素，首先放末尾，然后向上调整堆
 void Insert_Heap(int A[], int key, int n) {
 	//将key插入
-	int i, j;
+	int i;
 	for (i = n / 2; i >= 1; --i) {
 		AdjustHeap(A, i, n);
 	}
@@ -319,7 +319,6 @@ void CountSort2(List A[], int B[], int n) {
 }
 //基数排序
 void RadixSort(int A[], int n) {
-	int i;
 	int bit;	//bit表示数字的位
 	int max = getMax(A, n);
 	for (bit = 1; max/bit>0; bit *= 10) {
@@ -332,7 +331,7 @@ void RadixSortCore(int A[], int n,int bit) {
 	for (i = 0; i < n; ++i) {
 		++backets[(A[i]/bit)%10];	//相同位的放进一个桶
 	}
-	for (i = 1; i < 10; ++i) {
+	for (i = 1; i < 10; ++i) {	//这个方法很巧妙
 		backets[i] += backets[i - 1];	//更改buckets[i],目的是让更改后的buckets[i]的值，是该数据在output[]中的位置
 	}
 	for (i = n - 1; i >= 0; --i) {	//必须从后往前，否则会改变元素的相对位置

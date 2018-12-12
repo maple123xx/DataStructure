@@ -172,6 +172,39 @@ void PreOrder2(BTNode *root) {	//先序遍历的非递归版本
 		}
 	}
 }
+void Print_Road(BTNode *root, int x) {
+	//从根开始往下访问一直到叶节点，所经过的所有节点形成一条路径
+	//输出所有和x相等的路径
+	BTNode *p = root;
+	BTNode *stack[N_Node];
+	int top = -1;
+	int SumStack[N_Node];//用来保存当前已入栈的元素值和
+	int top1 = -1,i,sum=0;
+	while (top != -1 || p) {
+		if (p) {
+			stack[++top] = p;
+			SumStack[++top1] = p->data;
+			sum += SumStack[top1];
+			p = p->lchild;
+		}
+		else {
+			p = stack[top--];
+			p = p->rchild;
+			if (!p) {
+				if (sum == x) {
+					cout << "路径为：" << endl;
+					for (i = 0; i <= top1; ++i) {
+						cout << SumStack[i] << '\t';
+					}
+					cout << endl;
+				}
+				while (top1 != top) {	//将top1回退到top位置
+					sum -= SumStack[top1--];
+				}
+			}
+		}
+	}
+}
 void InOrder2(BTNode *root) {	//中序遍历的非递归版本
 	BTNode *p=root;
 	BTNode *stack[N_Node];
@@ -322,6 +355,26 @@ int DoubleSonNodes(BTNode *root) {
 	}
 	return num;
 }
+int NoSonNodes(BTNode *root) {
+	//统计叶节点个数
+	//非递归的方法把DoubleSonNodes的改一下就可以了
+	if (!root)
+		return 0;
+	else if (root->lchild == NULL&&root->rchild == NULL)
+		return 1 + NoSonNodes(root->lchild) + NoSonNodes(root->rchild);
+	else
+		return NoSonNodes(root->lchild) + NoSonNodes(root->rchild);
+}
+int SingleSonNodes(BTNode *root) {
+	//统计度为1的节点个数
+	//非递归的方法把DoubleSonNodes的改一下就可以了
+	if (!root)
+		return 0;
+	else if ((!root->lchild&&root->rchild) || (root->lchild && !root->rchild))
+		return 1 + SingleSonNodes(root->lchild) + SingleSonNodes(root->rchild);
+	else
+		return SingleSonNodes(root->lchild) + SingleSonNodes(root->rchild);
+}
 void SwapTree(BTNode *root) {	//交换二叉树的左右子树
 	if (root) {
 		SwapTree(root->lchild);
@@ -364,7 +417,40 @@ void DeleteX(BTNode *root, ElemType x) {//删除以x为根的子树，并释放空间
 			DeleteXTree(root);
 			exit(0);
 		}
+		BTNode *p;			//用层次遍历
+		BTNode *queue[N_Node];
+		int rear = 0, front = 0;
+		queue[++rear] = root;
+		while (rear != front) {
+			p = queue[++front];
+			if (p->lchild) {
+				if (p->lchild->data == x) {
+					DeleteXTree(p->lchild);
+					p->lchild = NULL;
+				}
+				else
+					queue[++rear] = p->lchild;
+			}
+			if (p->rchild) {
+				if (p->rchild->data == x) {
+					DeleteXTree(p->rchild);
+					p->rchild = NULL;
+				}
+				else
+					queue[++rear] = p->rchild;
+			}
+		}
 	}
+}
+void DeleteLeaf(BTNode *&root) {
+	//删除二叉树的所有叶节点
+	/*if (root) {
+		if (root->lchild==NULL && root->rchild==NULL) {
+			free(root);
+		}
+		DeleteLeaf(root->lchild);
+		DeleteLeaf(root->rchild);
+	}*/
 	BTNode *p;			//用层次遍历
 	BTNode *queue[N_Node];
 	int rear = 0, front = 0;
@@ -372,20 +458,14 @@ void DeleteX(BTNode *root, ElemType x) {//删除以x为根的子树，并释放空间
 	while (rear != front) {
 		p = queue[++front];
 		if (p->lchild) {
-			if (p->lchild->data == x) {
-				DeleteXTree(p->lchild);
-				p->lchild = NULL;
-			}
-			else
-				queue[++rear] = p->lchild;
+			queue[++rear] = p->lchild;
 		}
 		if (p->rchild) {
-			if (p->rchild->data == x) {
-				DeleteXTree(p->rchild);
-				p->rchild = NULL;
-			}
-			else
-				queue[++rear] = p->rchild;
+			queue[++rear] = p->rchild;
+		}
+		if (p->lchild == NULL&&p->rchild == NULL) {
+			DeleteXTree(p);
+			p = NULL;
 		}
 	}
 }
@@ -554,6 +634,250 @@ void PreToPost(ElemType pre[], int l1, int h1, ElemType post[], int l2, int h2) 
 		PreToPost(pre, l1 + half + 1, h1, post, l2 + half, h2 - 1);
 	}
 }
+void Level_X(BTNode *root, int x, int L, int *res) {
+	//求元素值为x的元素所在的层次
+	if (root) {
+		if (root->data == x)
+			*res = L;		//*res是返回值，返回x的层次
+		Level_X(root->lchild, x, L+1, res);
+		Level_X(root->rchild, x, L+1, res);
+	}
+}
+int Level_X2(BTNode *root, int x) {
+	//求元素值为x的元素所在的层次的第二种方法
+	if(!root)
+		return 0;
+	if (root->data == x)
+		return 1;
+	int a = Level_X2(root->lchild, x);
+	if (a)			//在左子树中找到了，才能a+1
+		return 1 + a;
+	else {
+		int b = Level_X2(root->rchild, x);
+		if(b)		//同理，在右子树中找到了，才能b+1
+			return 1 + b;
+	}
+}
+
+void PreValue_Level(BTNode *root,int L) {
+	//先序输出每个节点的值和所在层次
+	if (root) {
+		cout << root->data << '\t' << L << endl;
+		PreValue_Level(root->lchild,L+1);//这个方法好神奇，递归进入的时候，每次L+1
+		PreValue_Level(root->rchild,L+1);//递归到底了，回退相当于在上一次调用的L上减1
+	}
+}
+
+//二叉排序树的一些操作
+void Create_BST(BTNode *&root, ElemType str[], int n) {
+	root = NULL;
+	for (int i = 0; i < n; ++i) {
+		BST_Insert(root, str[i]);
+	}
+}
+bool BST_Insert(BTNode *&root, ElemType key) {//因为会改变root,所以要用&root
+	//插入的新节点一定是某个叶节点
+	if (!root) {
+		root = (BTNode *)malloc(sizeof(BTNode));
+		root->data = key;
+		root->lchild = root->rchild = NULL;
+		return true;
+	}
+	else if (root->data == key)
+		return false;	//树中已有相同关键字的节点
+	else if (root->data > key)
+		return BST_Insert(root->lchild, key);
+	else
+		return BST_Insert(root->rchild, key);
+}
+bool BST_Delete_Core(BTNode *&root) {
+	//二叉排序树删除结点，已找到关键字key
+	//指针root指向关键字key
+	BTNode *s,*q;
+	if (root->lchild == NULL&&root->rchild == NULL) {
+		root = NULL;
+	}
+	else if (root->lchild == NULL) {	//左子树空，用右子树代替root
+		q = root->rchild;
+		*root = *q;	//相当于拷贝了一份
+		free(q);
+	}
+	else if (root->rchild == NULL) {
+		q = root->lchild;
+		*root = *q;
+		free(q);
+	}
+	else {			//左右子树都不空，用root的直接前驱(左子树的最右节点)代替
+		q = root;
+		s = root->lchild;
+		while (s->rchild) {
+			q = s;
+			s = s->rchild;
+		}
+		root->data = s->data;
+		if (q == root)
+			q->lchild = s->lchild;
+		else {
+			q->rchild = s->lchild;
+		}
+		free(s);
+	}
+	return true;
+}
+bool BST_Delete(BTNode *&root, ElemType key) {
+	//二叉排序树存在关键字key则删除之，调整二叉排序树并返回true
+	//若关键字key不存在，则删除失败返回false
+	if (root==NULL)
+		return false;	//树为空，返回false
+	else if (root->data == key) {
+		BST_Delete_Core(root);
+		return true;
+	}
+	else if (root->data > key) {
+		return BST_Delete(root->lchild,key);
+	}
+	else {
+		return BST_Delete(root->rchild,key);
+	}
+}
+BTNode *SearchBST(BTNode *root, ElemType key, BTNode *&p) {
+	//查找函数返回指向关键字伟key的节点指针，不存在返回NULL
+	p = NULL;
+	while (root&&root->data != key) {
+		p = root;	//p指向被查找节点的双亲，用于插入和删除操作
+		if (root->data > key) {
+			root = root->lchild;
+		}
+		else
+			root = root->rchild;
+	}
+	return root;
+}
+bool SearchBST2(BTNode *root, ElemType key, BTNode *&parent, BTNode *&p) {
+	//递归的查找
+	//查找成功返回true，同时指针p指向该元素结点；查找失败返回FALSE，指针p指向访问路径上的最后一个结点
+	//指针parent指向root的双亲，初始调用值为NULL
+	if (!root) {
+		p = parent;
+		return false;
+	}
+	else if (root->data == key) {
+		p = root;
+		return true;
+	}
+	else if (root->data > key) {
+		SearchBST2(root->lchild, key, root, p);
+	}
+	else
+	{
+		SearchBST2(root->rchild, key, root, p);
+	}
+}
+ElemType pre = -9999;//全局变量，保存当前节点中序前驱的值，初始化为一个很小的值
+bool JudgeBST1(BTNode *root) {
+	//判断给定二叉树是否为二叉排序树
+	//解法一，二叉树中序遍历为递增序列，前一个值是否总是小于后一个值
+	int b1, b2;
+	if (!root)
+		return true;
+	else {
+		b1 = JudgeBST1(root->lchild);
+		if (!b1 || pre >= root->data)
+			return false;
+		pre = root->data;	//更新pre的值
+		b2 = JudgeBST1(root->rchild);
+		return b2;
+	}
+}
+bool JudgeBST2(BTNode *root) {
+	//解法二，判断每个结点是否大于其左孩子小于其右孩子，递归的方法
+	if (!root)
+		return true;
+	if (root->lchild == NULL&&root->rchild == NULL)
+		return true;
+	else if (root->lchild == NULL) {
+		if (root->rchild->data < root->data)
+			return false;
+		else
+			return JudgeBST2(root->rchild);
+	}
+	else if (root->rchild == NULL) {
+		if (root->lchild->data > root->data)
+			return false;
+		else
+			return JudgeBST2(root->lchild);
+	}
+	else {
+		if ((root->data < root->lchild->data) || (root->data > root->rchild->data))
+			return false;
+		else
+			return JudgeBST2(root->lchild) && JudgeBST2(root->rchild);
+	}
+}
+int BST_Level(BTNode *root, ElemType key) {
+	if (!root)
+		return 0;
+	int count = 1;
+	while (root&&root->data != key) {
+		++count;
+		if (root->data > key)
+			root = root->lchild;
+		else
+			root = root->rchild;
+	}
+	return count;
+}
+void MinKey(BTNode *root) {
+	while (root->lchild) {
+		root = root->lchild;
+	}
+	cout << "二叉排序树的最小值为" << root->data << endl;
+}
+void MaxKey(BTNode *root) {
+	while (root->rchild) {
+		root = root->rchild;
+	}
+	cout << "二叉排序树的最大值为" << root->data << endl;
+}
+void Output_Max_K(BTNode *root,ElemType k) {
+	//从大到小输出所有大于等于k的数
+	//从大到小输出，就先从右子树递归
+	if (root) {
+		Output_Max_K(root->rchild,k);
+		if (root->data >= k)
+			cout << root->data << '\t';
+		Output_Max_K(root->lchild, k);
+	}
+}
+int Count_Node(BTNode *root) {
+	//存储以该节点为根的子树的节点个数
+	if (!root) {
+		return 0;
+	}
+	else {
+		root->count = 1 + Count_Node(root->lchild) + Count_Node(root->rchild);
+	}
+}
+BTNode* Number_K(BTNode *root, int k) {
+	//在以root为根的二叉排序树上寻找第k小的元素，返回其所在节点的指针
+	if (k<1 || k>root->count)
+		return NULL;
+	if (!root->lchild) {
+		if (k == 1)
+			return root;
+		else
+			return Number_K(root->rchild, k - 1);
+	}
+	else {
+		if (root->lchild->count == k - 1)
+			return root;
+		if (root->lchild->count > (k - 1))
+			return Number_K(root->lchild, k);
+		if (root->lchild->count < (k - 1))
+			return Number_K(root->rchild, k - (root->lchild->count + 1));
+	}
+}
+
 LinkedList head, p = NULL;
 LinkedList InOrderLeaf(BTNode *root) {//将二叉树的叶子用右指针串起来
 	if (root) {
@@ -581,7 +905,6 @@ void PrintLeaf(BTNode *root) {
 		pHead = pHead->rchild;
 	}
 }
-
 
 weightBTNode* CreateWeightTree(const string &str) {//建一颗带权路径树，相当于把树的节点信息变为权值，其他不变
 	weightBTNode *p;

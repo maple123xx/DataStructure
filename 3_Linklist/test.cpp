@@ -408,6 +408,35 @@ void Search_K(PNODE pHead, int k) {//寻找倒数第K个节点
 	else
 		cout << "倒数第" << k << "个值为" << q->data << endl;
 }
+//面试题二十二：链表中倒数第k个节点
+PNODE Search_K2(PNODE pHead, int k) {
+	//方法二：先让p走k-1步，再一起走，直到p到最后一个节点
+	if (!pHead || k == 0)	//考虑鲁棒性
+		return NULL;
+	PNODE p = pHead->next, q = pHead->next;
+	for (int i = 0; i < k - 1; ++i) {	//先让p走k-1步
+		if (!p->next)		//考虑鲁棒性
+			return NULL;
+		p = p->next;
+	}
+	while (p->next) {
+		p = p->next;
+		q = q->next;
+	}
+	return q;
+}
+//面试题二十二相关题目：求链表的中间节点
+PNODE Middle_Node(PNODE pHead) {
+	PNODE p = pHead->next, q = pHead->next;
+	while (p) {
+		p = p->next;
+		if (p) {
+			p = p->next;
+			q = q->next;
+		}
+	}
+	return q;
+}
 void Find_Common(PNODE A, PNODE B) {//找寻两个链表的公共起点
 	PNODE pa = A->next, pb = B->next;
 	int m = LengthList(A), n = LengthList(B);
@@ -684,6 +713,32 @@ void SelectSort(PNODE pHead) {
 	}
 	cout << endl;
 }
+//面试题十七：删除所有重复元素
+void DeleteRepeat(PNODE pHead) {
+	//删除所有值重复的元素，比如1，2，3，3，4，4，5变为1，2，5
+	PNODE pre = pHead, p = pHead->next;
+	while (p) {
+		PNODE post = p->next;
+		bool isRepeat = false;
+		if (post&&post->data == p->data) {
+			isRepeat = true;
+		}
+		if (!isRepeat) {
+			pre = p;
+			p = p->next;
+		}
+		else {
+			int value = p->data;
+			while (p&&p->data == value) {
+				post = p->next;
+				free(p);
+				p = post;
+			}
+			pre->next = post;
+		}
+	}
+}
+
 
 int main() {
 	//PNODE L;//定义一个指针，而不是一个节点，如果用NODE L;则至少会创造一个节点(因为只要头指针，不要头节点)
@@ -696,9 +751,12 @@ int main() {
 	InitList(&L);
 	CreateList(&L);
 	PrintList(&L);
-	cout << endl;
+	//DeleteRepeat(&L);
+	//PrintList(&L);
+	PNODE p = Middle_Node(&L);
+	cout << "值为：" << p->data << endl;
 	//Reverse_2(&L);
-	SelectSort(&L);
+	//SelectSort(&L);
 	//Del_Same(&L);
 	//PrintList(&L);
 	//NODE A, B;
