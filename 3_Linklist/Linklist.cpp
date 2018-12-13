@@ -4,10 +4,10 @@
 using namespace std;
 
 void InitList(PNODE pHead) {//带头节点的单链表初始化
-	pHead = NULL;
+	pHead->next = NULL;
 	cout << "初始化成功" << endl;
 }
-PNODE CreateList(PNODE pHead) {	//PNODE是指针类型,PNODE等价于NODE *
+void CreateList(PNODE pHead) {	//PNODE是指针类型,PNODE等价于NODE *
 	PNODE s, r = pHead;
 	int x;
 	cout << "请输入链表的值（输入100表示结束）：" << endl;
@@ -20,7 +20,6 @@ PNODE CreateList(PNODE pHead) {	//PNODE是指针类型,PNODE等价于NODE *
 		cin >> x;
 	}
 	r->next = NULL;
-	return pHead;
 }
 
 void DestroyList(PNODE pHead) {

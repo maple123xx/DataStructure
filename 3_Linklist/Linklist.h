@@ -15,7 +15,7 @@ typedef struct DNode {//双链表的定义
 }DNODE,*DPNODE;
 
 void InitList(PNODE pHead);//带头节点单链表的初始化
-PNODE CreateList(PNODE pHead);//尾插创建链表
+void CreateList(PNODE pHead);//尾插创建链表
 void DestroyList(PNODE pHead);//销毁链表
 PNODE ClearList(PNODE pHead);//清空链表
 int FindList(PNODE pHead, int pos);//返回第pos位置的节点

@@ -625,21 +625,18 @@ void CreateList4_1(DPNODE pHead) {//头插创建带头循环双链表
 	}
 }
 void CreateList4_2(const string &str,DPNODE pHead)
-{//尾插创建带头循环双链表
+{	//尾插创建带头循环双链表
 	try
 	{
 		DPNODE p;
 		DPNODE r = pHead->prior;
 		ifstream ins(str);
 		if (!ins) { throw exception(); }
-
 		int numRow;
 		ins >> numRow;
 		if (numRow < 1) { throw exception(); }
-		
 		int x;
-		for (int i = 0; i < numRow; ++i)
-		{
+		for (int i = 0; i < numRow; ++i){
 			p = (DPNODE)malloc(sizeof(DNODE));
 			ins >> x;
 			p->data = x;
@@ -682,6 +679,61 @@ void Symmetry(DPNODE pHead) {//判断循环双链表是否是对称的
 	}
 	cout << "该循环双链是对称的" << endl;
 	return;
+}
+
+void InitList5(DPNODE pHead) {
+	pHead->next = NULL;
+	pHead->prior = NULL;
+	cout << "双链表初始化成功" << endl;
+}
+void CreateList5_1(DPNODE pHead) {
+	//头插法创建带头节点双链表
+	DPNODE p;
+	int x;
+	cout << "请输入链表的值（输入100表示结束）：" << endl;
+	cin >> x;
+	while (x != 100) {
+		p = (DPNODE)malloc(sizeof(DNODE));
+		p->data = x;
+		if (!pHead->next) {		//当还没有节点时
+			p->next = NULL;
+			pHead->next = p;
+			p->prior = pHead;
+		}
+		else {
+			p->next = pHead->next;
+			pHead->next->prior = p;
+			pHead->next = p;
+			p->prior = pHead;
+		}
+		cin >> x;
+	}
+}
+void CreateList5_2(DPNODE pHead) {
+	//尾插法创建带头节点双链表
+	DPNODE p, r = pHead;
+	int x;
+	cout << "请输入链表的值（输入100表示结束）：" << endl;
+	cin >> x;
+	while (x != 100) {
+		p = (DPNODE)malloc(sizeof(DNODE));
+		p->data = x;
+		p->next = NULL;
+		r->next = p;
+		p->prior = r;
+		r = p;
+		cin >> x;
+	}
+}
+void PrintList5(DPNODE pHead) {
+	DPNODE p = pHead->next;
+	cout << "输出链表为：" << endl;
+	while (p)
+	{
+		cout << p->data << "\t";
+		p = p->next;
+	}
+	cout << endl;
 }
 
 void SelectSort(PNODE pHead) {
@@ -742,20 +794,24 @@ void DeleteRepeat(PNODE pHead) {
 
 
 int main() {
+	NODE L;
+	InitList(&L);
+	CreateList(&L);
+	PrintList(&L);
 	//PNODE L;//定义一个指针，而不是一个节点，如果用NODE L;则至少会创造一个节点(因为只要头指针，不要头节点)
 	//InitList2(L);
 	//CreateList3(L);
 	//PrintList2(L);
 	//Delete_X_3(L, 1);
 	//PrintList2(L);
-	NODE L;
-	InitList(&L);
-	CreateList(&L);
-	PrintList(&L);
+	/*DNODE L;
+	InitList5(&L);
+	CreateList5_2(&L);
+	PrintList5(&L);*/
 	//DeleteRepeat(&L);
 	//PrintList(&L);
-	PNODE p = Middle_Node(&L);
-	cout << "值为：" << p->data << endl;
+	/*PNODE p = Middle_Node(&L);
+	cout << "值为：" << p->data << endl;*/
 	//Reverse_2(&L);
 	//SelectSort(&L);
 	//Del_Same(&L);
