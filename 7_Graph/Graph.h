@@ -76,8 +76,16 @@ void Floyd(MGraph *mgraph, int path[][N_matrix], Value_Type cost[][N_matrix]);
 void Print_Floyd(int beg, int end, int path[][N_matrix]);
 void Floyd_call(MGraph *mgraph, int beg, int end);
 bool Top_Sort(AGraph *agraph, int sorted[]);
+void Top_Sort_DFS(AGraph *agraph);
+void Top_Sort_DFS_Core(AGraph *agraph, int v, bool visited[], int &time, int finishtime[]);
 bool TopSort_Critical(AGraph *agraph, Value_Type ve[], int stack2[], int &top);
 Value_Type max_ve(Value_Type ve[], int n);
 void Critical_Path(AGraph *agraph);
+
+void ConvertA_M(AGraph *agraph, MGraph *mgraph);
+bool Exist_Path_DFS(AGraph *agraph, int i, int j, bool visited[]);
+bool Exist_Path_DFS2(AGraph *agraph, int i, int j);
+bool Exist_Path_BFS(AGraph *agraph, int i, int j, bool have_visited[]);
+void Path_U_V(AGraph *agraph, int u, int v, int path[], int paths[][N_list], int &pathnum, int &d, bool visited[]);
 
 #endif // !graph_

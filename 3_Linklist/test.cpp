@@ -121,7 +121,7 @@ void Delete_Min1(PNODE pHead) {//删除带头节点链表的最小值（假设唯一）
 }
 void Reverse_1(PNODE pHead) {//逆置链表
 	
-	//PNODE p = pHead->next;//方法一：头插法p为工作指针，r为其后继，以防断链，将头节点摘下，然后从第一个节点开始，依次插入到头节点后面
+	//PNODE p = pHead->next;//方法一：头插法，p为工作指针，r为其后继，以防断链，将头节点摘下，然后从第一个节点开始，依次插入到头节点后面
 	//PNODE r;
 	//pHead->next = NULL;//将pHead的next域赋为空，因为链表逆置后它为最后一个节点
 	//while (p)
@@ -427,6 +427,7 @@ PNODE Search_K2(PNODE pHead, int k) {
 }
 //面试题二十二相关题目：求链表的中间节点
 PNODE Middle_Node(PNODE pHead) {
+	//p走两步，q走一步，p到头了，q就到中间了
 	PNODE p = pHead->next, q = pHead->next;
 	while (p) {
 		p = p->next;

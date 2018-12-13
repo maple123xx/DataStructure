@@ -138,7 +138,7 @@ void DFS(AGraph *agraph, int vertex, bool have_visited[]) {
 	p = agraph->adjlist[vertex].first;
 	while (p)
 	{
-		if (have_visited[p->adjvex.no] == false) {//如果没有访问，就访问它
+		if (!have_visited[p->adjvex.no]) {//如果没有访问，就访问它
 			DFS(agraph, p->adjvex.no, have_visited);
 		}
 		p = p->next;
@@ -474,7 +474,7 @@ void Print_Dijstra(int obj, int pre[]) {
 	}
 	cout << endl;
 }
-void Dijstra_call(MGraph *mgraph, int v0, int obj) {//求v0到任意重点obj的最短路径
+void Dijstra_call(MGraph *mgraph, int v0, int obj) {//求v0到任意终点obj的最短路径
 	//调用迪杰斯特拉算法
 	if (v0<1 || v0>mgraph->num_node || obj<1 || obj>mgraph->num_node)
 	{
@@ -578,6 +578,44 @@ bool Top_Sort(AGraph *agraph, int sorted[]) {
 		return false;
 	}
 }
+void Top_Sort_DFS(AGraph *agraph) {
+	//利用DFS做拓扑排序
+	int i, j;
+	bool visited[N_list] = { false };
+	int time = 0;
+	int finishTime[N_list] = { 0 };
+	for (int i = 1; i <= agraph->num_node; ++i) {
+		if(!visited[i])
+			Top_Sort_DFS_Core(agraph, i, visited, time, finishTime);	//因为不知道从哪个顶点开始，所以任意开始，time会记录
+	}
+	int max;
+	cout << "拓扑排序为：" << endl;
+	for (i = 1; i <= agraph->num_node; ++i) {
+		max = 1;	//max是最大值的索引
+		for (j = 1; j <= agraph->num_node; ++j) {
+			if (finishTime[j] > finishTime[max]) {
+				max = j;
+			}
+		}
+		cout << max << '\t';
+		finishTime[max] -= 10;	//将每一轮的最大值减掉10（或者其他数，大于agraph->num_node）即可，下一轮就不会选到它了
+	}
+
+}
+void Top_Sort_DFS_Core(AGraph *agraph, int v, bool visited[], int &time, int finishTime[]) {
+	//利用DFS做拓扑排序，假设u是v的祖先，则在调用DFS访问u时，一定递归的对v调用DFS访问了，也就是说v的DFS函数结束时间要小于u
+	//按结束时间从大到小排序，就是一个拓扑排序
+	Arc *p;
+	visited[v] = true;
+	p = agraph->adjlist[v].first;
+	while (p) {
+		if (!visited[p->adjvex.no])
+			Top_Sort_DFS_Core(agraph, p->adjvex.no, visited, time, finishTime);
+		p = p->next;
+	}
+	++time;
+	finishTime[v] = time;
+}
 bool TopSort_Critical(AGraph *agraph, Value_Type ve[], int stack2[], int &top2) {
 	//适用于求有向图的关键路径的拓扑排序
 	//结果保存在栈stack2[]中，下标从0开始，对stack2[]进行出栈操作能得到逆拓扑排序
@@ -668,6 +706,135 @@ void Critical_Path(AGraph *agraph) {
 		}
 	}
 	cout << endl;
+}
+
+void ConvertA_M(AGraph *agraph, MGraph *mgraph) {
+	//将邻接表方式表示的图转换成邻接矩阵表示
+	int i, j;
+	Arc *p;
+	mgraph->num_node = agraph->num_node;
+	mgraph->num_edge = 0;
+	for (i = 1; i <= agraph->num_node; ++i) {
+		mgraph->vertex[i].info = agraph->adjlist[i].ver_head.info;
+		mgraph->vertex[i].no = agraph->adjlist[i].ver_head.no;
+	}
+	for (i = 1; i <= agraph->num_node; ++i) {
+		p = agraph->adjlist[i].first;
+		while (p) {
+			mgraph->edge[i][p->adjvex.no] = p->weight;
+			++mgraph->num_edge;
+			p = p->next;
+		}
+	}
+	for (i = 1; i <= mgraph->num_node; ++i) {
+		for (j = 1; j <= mgraph->num_node; ++j) {
+			if (mgraph->edge[i][j] > 0);
+			else if (i == j)			//到自己的距离为0
+				mgraph->edge[i][j] = CON_SELF;
+			else                  //无连接
+				mgraph->edge[i][j] = CON_N;
+		}
+	}
+}
+bool Exist_Path_DFS(AGraph *agraph, int i, int j, bool visited[]) {
+	//判断顶点i，j是否有边连接,用DFS
+	if (i<1 || j<1 || i>agraph->num_node || j>agraph->num_node) {
+		cout << "顶点必须为1到agraph->num_node之间的数" << endl;
+		exit(1);
+	}
+	if (i == j)		//递归退出条件
+		return true;
+	Arc *p;
+	visited[i] = true;
+	p = agraph->adjlist[i].first;
+	while (p) {
+		if (!visited[p->adjvex.no] && Exist_Path_DFS(agraph, p->adjvex.no, j, visited))
+			return true;
+		p = p->next;
+	}
+	return false;
+}
+bool Exist_Path_DFS2(AGraph *agraph, int i, int j) {
+	//判断顶点i，j是否有边连接,用非递归的DFS
+	if (i<1 || j<1 || i>agraph->num_node || j>agraph->num_node) {
+		cout << "顶点必须为1到agraph->num_node之间的数" << endl;
+		exit(1);
+	}
+	Arc *p;
+	int s, k, top = -1;	//初始化栈
+	int stack[N_list];
+	bool have_visited[N_list];
+	for (s = 1; s <= agraph->num_node; ++s)
+		have_visited[s] = false;	//初始化访问标记数组
+	have_visited[i] = true;	//标记为已访问
+	stack[++top] = i;	//入栈
+	while (top != -1) {
+		k = stack[top];		//取栈顶元素
+		if (k == j)
+			return true;
+		p = agraph->adjlist[k].first;		//指向栈顶的第一条边
+		while (p && have_visited[p->adjvex.no] == true)
+			p = p->next;			//走到第一个没有访问过的邻接顶点或者走到链表尾
+		if (p == NULL)				//到达链表尾部，说明当前顶点的所有邻接点访问完毕
+			--top;					//出栈
+		else
+		{
+			have_visited[p->adjvex.no] = true;	//标记为已访问
+			stack[++top] = p->adjvex.no;	//入栈
+		}
+	}
+	return false;
+}
+bool Exist_Path_BFS(AGraph *agraph, int i, int j, bool have_visited[]) {
+	//判断顶点i，j是否有边连接,用BFS
+	if (i<1 || j<1 || i>agraph->num_node || j>agraph->num_node) {
+		cout << "顶点必须为1到agraph->num_node之间的数" << endl;
+		exit(1);
+	}
+	if (i == j)
+		return true;
+	int queue[N_list];
+	int rear = 0, front = 0;
+	int ver = i;
+	queue[++rear] = ver;
+	have_visited[ver] = true;
+	Arc *p;
+	while (rear != front) {
+		ver = queue[++front];
+		p = agraph->adjlist[ver].first;
+		while (p) {
+			if (p->adjvex.no == j)
+				return true;
+			if (!have_visited[p->adjvex.no]) {
+				have_visited[p->adjvex.no] = true;
+				queue[++rear] = p->adjvex.no;
+			}
+			p = p->next;
+		}
+	}
+	return false;
+}
+void Path_U_V(AGraph *agraph, int u, int v, int path[], int paths[][N_list], int &pathnum,int &d, bool visited[]) {
+	//输出从u到v的所有路径
+	//path表示某条路径，paths表示所有路径，pathnum是路径数量，d表示第d个位置
+	int i;
+	Arc *p;
+	path[++d] = u;
+	visited[u] = true;
+	if (u == v) {	//找到终点了
+		for (i = 0; i <= d; ++i) {
+			paths[pathnum][i] = path[i];
+		}
+		++pathnum;
+	}
+	p = agraph->adjlist[u].first;
+	while (p) {
+		if (!visited[p->adjvex.no])
+			Path_U_V(agraph, p->adjvex.no, v, path, paths, pathnum, d, visited);
+		p = p->next;
+	}
+	visited[u] = false;	//回退，使得下次还可能访问到它
+	--d;	//回退
 }
 
 
