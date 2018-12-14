@@ -444,30 +444,58 @@ void DeleteX(BTNode *root, ElemType x) {//删除以x为根的子树，并释放空间
 }
 void DeleteLeaf(BTNode *&root) {
 	//删除二叉树的所有叶节点
-	/*if (root) {
-		if (root->lchild==NULL && root->rchild==NULL) {
+	bool lflag = false, rflag = false;
+	if (root) {
+		if (!root->lchild && !root->rchild) {
 			free(root);
+			root = NULL;
+			return;
 		}
-		DeleteLeaf(root->lchild);
-		DeleteLeaf(root->rchild);
-	}*/
-	BTNode *p;			//用层次遍历
-	BTNode *queue[N_Node];
-	int rear = 0, front = 0;
-	queue[++rear] = root;
-	while (rear != front) {
-		p = queue[++front];
-		if (p->lchild) {
-			queue[++rear] = p->lchild;
+		if (root->lchild) {
+			if (!root->lchild->lchild && !root->lchild->rchild) {
+				lflag = true;
+				free(root->lchild);
+				root->lchild = NULL;
+			}
 		}
-		if (p->rchild) {
-			queue[++rear] = p->rchild;
+		if (root->rchild) {
+			if (!root->rchild->lchild && !root->rchild->rchild) {
+				rflag = true;
+				free(root->rchild);
+				root->rchild = NULL;
+			}
 		}
-		if (p->lchild == NULL&&p->rchild == NULL) {
-			DeleteXTree(p);
-			p = NULL;
-		}
+		if(!lflag)
+			DeleteLeaf(root->lchild);
+		if(!rflag)
+			DeleteLeaf(root->rchild);
 	}
+	//BTNode *p;			//用层次遍历
+	//BTNode *queue[N_Node];
+	//int rear = 0, front = 0;
+	//queue[++rear] = root;
+	//while (rear != front) {
+	//	p = queue[++front];
+	//	if (p->lchild) {			
+	//		if (p->lchild->lchild == NULL&&p->lchild->rchild == NULL) {//判断左孩子是不是叶节点
+	//			DeleteXTree(p->lchild);
+	//			p->lchild = NULL;
+	//		}
+	//		else {
+	//			queue[++rear] = p->lchild;
+	//		}
+	//	}
+	//	if (p->rchild) {			
+	//		if (p->rchild->lchild == NULL&&p->rchild->rchild == NULL) {//判断右孩子是不是叶节点
+	//			DeleteXTree(p->rchild);
+	//			p->rchild = NULL;
+	//		}
+	//		else {
+	//			queue[++rear] = p->rchild;
+	//		}
+	//	}
+	//	
+	//}
 }
 void SearchX(BTNode *root,ElemType x) {	//查找值为x的节点，并打印该节点的所有祖先，假设值为x的节点唯一
 	BTNode *p = root;			//用后续遍历，当访问某个节点时，栈中元素都是它的祖先
@@ -811,6 +839,37 @@ int wpl_LevelOrder(weightBTNode *root) {
 	}
 	return wpl;
 }
+int Caculation_Core(int A, int B, char C) {
+	switch (C)
+	{
+	case '+':return A + B;
+	case '-':return A - B;
+	case '*':return A * B;
+	case '/':return A / B;
+	case '%':return A % B;
+	default:
+		cout << "文件格式不对，运算符有误！" << endl;
+		exit(1);
+	}
+}
+int Caculation(BTNode *root) {
+	//计算+、-、*、/、%
+	//root只含有度为2、0的结点，度为2的结点是上述5种运算符的字符，度为0的结点是数值0~9的字符
+	if (root) {
+		int l_value, r_value;
+		if (root->lchild&&root->rchild) {
+			l_value = Caculation(root->lchild);
+			r_value = Caculation(root->rchild);
+			return Caculation_Core(l_value, r_value, root->data);
+		}
+		else {
+			return root->data - '0';//字符转int
+		}
+	}
+	else {
+		return 0;
+	}
+}
 
 //二叉排序树的一些操作
 void Create_BST(BTNode *&root, ElemType str[], int n) {
@@ -1021,39 +1080,9 @@ BTNode* Number_K(BTNode *root, int k) {
 			return Number_K(root->rchild, k - (root->lchild->count + 1));
 	}
 }
-int Caculation_Core(int A, int B, char C) {
-	switch (C)
-	{
-	case '+':return A + B;
-	case '-':return A - B;
-	case '*':return A * B;
-	case '/':return A / B;
-	case '%':return A % B;
-	default:
-		cout << "文件格式不对，运算符有误！" << endl;
-		exit(1);
-	}
-}
-int Caculation(BTNode *root) {
-	//计算+、-、*、/、%
-	//root只含有度为2、0的结点，度为2的结点是上述5种运算符的字符，度为0的结点是数值0~9的字符
-	if (root) {
-		int l_value, r_value;
-		if (root->lchild&&root->rchild) {
-			l_value = Caculation(root->lchild);
-			r_value = Caculation(root->rchild);
-			return Caculation_Core(l_value, r_value, root->data);
-		}
-		else {
-			return root->data - '0';//字符转int
-		}
-	}
-	else {
-		return 0;
-	}
-}
 
 //线索二叉树的操作，以后如果把二叉树线索化了，判断有没有左孩子就要用root->ltag==0,不能用root->lchild==NULL了，没有线索化的话就照常
+//以后如果要用线索二叉树的话，就要在创建一个节点的时候root->ltag=s->rtag=0;
 void InThread_Core(BTNode *root, BTNode *&pre) {
 	if (root) {
 		InThread_Core(root->lchild, pre);//递归，线索化左子树

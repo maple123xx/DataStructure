@@ -3,9 +3,11 @@
 int main() {
 	const string str = "data\\weight_7.txt";
 	BTNode *p = CreateTree(str);
-	const string str1 = "data\\tree_15.txt";
+	const string str1 = "data\\tree_1.txt";
 	BTNode *p1 = CreateTree(str1);
-	All_leaf_Path(p1);
+	DeleteLeaf(p1);
+	PreOrder(p1);
+	//All_leaf_Path(p1);
 	//PreThread(p1);
 	//PreOrder_Thread(p1);
 	//InThread(p1);

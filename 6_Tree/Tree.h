@@ -69,6 +69,8 @@ void CreateWeightTree2(int root, int num_node, int weight[N_Node], int tree_orde
 int WPL(weightBTNode *root);
 int wpl_PreOrder(weightBTNode *root, int deep);
 int wpl_LevelOrder(weightBTNode *root);
+int Caculation_Core(int A, int B, char C);
+int Caculation(BTNode *root);
 
 //二叉排序树的操作
 void Create_BST(BTNode *&root, ElemType str[], int n);
@@ -85,8 +87,6 @@ void MaxKey(BTNode *root);
 void Output_Max_K(BTNode *root, ElemType k);
 int Count_Node(BTNode *root);
 BTNode* Number_K(BTNode *root, int k);
-int Caculation_Core(int A, int B, char C);
-int Caculation(BTNode *root);
 
 //线索二叉树的操作
 void InThread_Core(BTNode *root, BTNode *&pre);
