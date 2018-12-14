@@ -65,6 +65,24 @@ void Delete_X_3(PNODE &L, int x) {//µİ¹éÉ¾³ıÒ»¸ö²»´øÍ·½ÚµãµÄÁ´±íÖĞËùÓĞÖµÎªxµÄÔªË
 	else
 		Delete_X_3(L->next, x);
 }
+//ÃæÊÔÌâ25£ººÏ²¢Á½¸öÅÅĞòµÄÁ´±í,Ê¹ÆäÉıĞò
+PNODE MergeList2(PNODE A, PNODE B) {
+	//ÕâÊÇ²»´øÍ·½ÚµãµÄ£¬Ê¹ÓÃµİ¹éµÄ·½·¨£¬Ò²ÓĞ·Çµİ¹éµÄ·½·¨
+	if (!A)
+		return B;
+	else if (!B)
+		return A;
+	PNODE C = nullptr;
+	if (A->data < B->data) {
+		C= A;
+		C->next = MergeList2(A->next, B);
+	}
+	else {
+		C = B;
+		C->next = MergeList2(A, B->next);
+	}
+	return C;
+}
 
 void Delete_X_2(PNODE pHead,int x) {//É¾³ı´øÍ·½ÚµãµÄÁ´±íÖĞËùÓĞÖµÎªxµÄÔªËØ
 	/*PNODE pre = pHead;//·½·¨Ò»£¬ÓÃÇ°ºóÁ½¸öÖ¸Õë
@@ -438,6 +456,7 @@ PNODE Middle_Node(PNODE pHead) {
 	}
 	return q;
 }
+
 void Find_Common(PNODE A, PNODE B) {//ÕÒÑ°Á½¸öÁ´±íµÄ¹«¹²Æğµã
 	PNODE pa = A->next, pb = B->next;
 	int m = LengthList(A), n = LengthList(B);
@@ -794,10 +813,17 @@ void DeleteRepeat(PNODE pHead) {
 
 
 int main() {
-	NODE L;
-	InitList(&L);
-	CreateList(&L);
-	PrintList(&L);
+	PNODE L;
+	InitList2(L);
+	CreateList2_2(L);
+	PrintList2(L);
+	PNODE A, B;
+	InitList2(A);
+	CreateList2_2(A);
+	InitList2(B);
+	CreateList2_2(B);
+	PNODE C = MergeList2(A, B);
+	PrintList2(C);
 	//PNODE L;//¶¨ÒåÒ»¸öÖ¸Õë£¬¶ø²»ÊÇÒ»¸ö½Úµã£¬Èç¹ûÓÃNODE L;ÔòÖÁÉÙ»á´´ÔìÒ»¸ö½Úµã(ÒòÎªÖ»ÒªÍ·Ö¸Õë£¬²»ÒªÍ·½Úµã)
 	//InitList2(L);
 	//CreateList3(L);

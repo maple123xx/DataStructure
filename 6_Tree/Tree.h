@@ -2,10 +2,10 @@
 #define Tree_
 
 #include"myNamespace.h"
-typedef int ElemType;
+typedef char ElemType;
 typedef struct BTNode {
 	ElemType data;
-	//int ltag, rtag;		//为0代表指向孩子，为1代表指向线索
+	int ltag, rtag;		//ltag为0指向左孩子，为1指向前驱；rtag为0指向右孩子，为1代表指向后继
 	struct BTNode *lchild, *rchild;
 	int count;		//给二叉树增设一个count成员，存储以该节点为根的子树的节点个数，二叉排序树的时候用到了
 }BTNode,*BTree,*LinkedList;
@@ -55,8 +55,22 @@ void PreToPost(ElemType pre[], int l1, int h1, ElemType post[], int l2, int h2);
 void Level_X(BTNode *root, int x,int L,int *res);
 int Level_X2(BTNode *root, int x);
 void PreValue_Level(BTNode *root, int L);
+LinkedList InOrderLeaf(BTNode *root);
+void PrintLeaf(BTNode *root);
+void All_leaf_Path_Core(BTNode *root, BTNode *path[], int &top);
+void All_leaf_Path(BTNode *root);
 
+typedef struct weightBTNode {
+	int weight;
+	struct weightBTNode *lchild, *rchild;
+}weightBTNode;
+weightBTNode* CreateWeightTree(const string &str);
+void CreateWeightTree2(int root, int num_node, int weight[N_Node], int tree_order[N_Node], weightBTNode *p);
+int WPL(weightBTNode *root);
+int wpl_PreOrder(weightBTNode *root, int deep);
+int wpl_LevelOrder(weightBTNode *root);
 
+//二叉排序树的操作
 void Create_BST(BTNode *&root, ElemType str[], int n);
 bool BST_Insert(BTNode *&root, ElemType key);
 bool BST_Delete_Core(BTNode *&root);
@@ -71,18 +85,16 @@ void MaxKey(BTNode *root);
 void Output_Max_K(BTNode *root, ElemType k);
 int Count_Node(BTNode *root);
 BTNode* Number_K(BTNode *root, int k);
+int Caculation_Core(int A, int B, char C);
+int Caculation(BTNode *root);
 
-
-LinkedList InOrderLeaf(BTNode *root);
-void PrintLeaf(BTNode *root);
-
-typedef struct weightBTNode {
-	int weight;
-	struct weightBTNode *lchild, *rchild;
-}weightBTNode;
-weightBTNode* CreateWeightTree(const string &str);
-void CreateWeightTree2(int root, int num_node, int weight[N_Node], int tree_order[N_Node], weightBTNode *p);
-int WPL(weightBTNode *root);
-int wpl_PreOrder(weightBTNode *root, int deep);
-int wpl_LevelOrder(weightBTNode *root);
+//线索二叉树的操作
+void InThread_Core(BTNode *root, BTNode *&pre);
+void InThread(BTNode *root);
+BTNode *FirstNode(BTNode *p);
+BTNode *NextNode(BTNode *p);
+void InOrder_Thread(BTNode *root);
+void PreThread_Core(BTNode *root, BTNode *&pre);
+void PreThread(BTNode *root);
+void PreOrder_Thread(BTNode *root);
 #endif // !Tree_

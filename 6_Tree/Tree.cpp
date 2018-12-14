@@ -10,7 +10,6 @@ BTNode* CreateTree(const string &str) {
 	BTNode *p;
 	try
 	{
-		
 		int i;
 		int num_node;
 		ElemType tree_data[N_Node];
@@ -48,6 +47,7 @@ void CreateTree2(int root, int num_node, ElemType tree_data[N_Node], int tree_or
 	int i;					//递归创建树的节点
 //	BTNode *lchild, *rchild;
 	p->data = tree_data[root];
+	p->ltag = p->rtag = 0;
 	for (i = 1; i <= num_node; ++i) {
 		if (tree_order[i] == tree_order[root] * 2) {
 			BTNode *lchild = (BTNode *)malloc(sizeof(BTNode));
@@ -607,9 +607,10 @@ int Similar(BTNode *root1, BTNode *root2) {//判断两棵二叉树是否相似
 	}
 }
 BTNode *PreInCreate(ElemType A[], ElemType B[], int l1, int h1, int l2, int h2) {
-	// 根据先序遍历和中序遍历创建一个二叉树
+	// 根据先序遍历和中序遍历创建一个二叉树,假定二叉树中结点的数据值各不相同（重要）
 	BTNode *root = (BTNode *)malloc(sizeof(BTNode));
 	root->data = A[l1];
+	root->ltag = root->rtag = 0;
 	int i;
 	for (i = l2; B[i] != root->data; ++i);//找到位于中间的节点（根节点）
 	int llen = i - l2;//左子树长度
@@ -658,7 +659,6 @@ int Level_X2(BTNode *root, int x) {
 			return 1 + b;
 	}
 }
-
 void PreValue_Level(BTNode *root,int L) {
 	//先序输出每个节点的值和所在层次
 	if (root) {
@@ -666,6 +666,150 @@ void PreValue_Level(BTNode *root,int L) {
 		PreValue_Level(root->lchild,L+1);//这个方法好神奇，递归进入的时候，每次L+1
 		PreValue_Level(root->rchild,L+1);//递归到底了，回退相当于在上一次调用的L上减1
 	}
+}
+LinkedList head, p = NULL;
+LinkedList InOrderLeaf(BTNode *root) {//将二叉树的叶子用右指针串起来
+	if (root) {
+		InOrderLeaf(root->lchild);
+		if (root->lchild == NULL && root->rchild == NULL) {
+			if (p == NULL) {
+				head = root;
+				p = root;
+			}
+			else {
+				p->rchild = root;
+				p = root;
+			}
+		}
+		InOrderLeaf(root->rchild);
+		p->rchild = NULL;
+	}
+	return head;
+
+}
+void PrintLeaf(BTNode *root) {//将叶子节点输出
+	LinkedList pHead = InOrderLeaf(root);
+	while (pHead) {
+		cout << pHead->data << '\t';
+		pHead = pHead->rchild;
+	}
+}
+void All_leaf_Path_Core(BTNode *root,BTNode *path[],int &top) {
+	if (root) {
+		path[++top] = root;
+		if (!root->lchild && !root->rchild) {
+			for (int i = 0; i <= top; ++i) {
+				cout << path[i]->data << '\t';
+			}
+			cout << endl;
+		}
+		All_leaf_Path_Core(root->lchild, path, top);
+		All_leaf_Path_Core(root->rchild, path, top);
+		--top;	//回退一步，进入父节点的右孩子
+	}
+}
+void All_leaf_Path(BTNode *root) {
+	//打印二叉树中根到每个叶子的路径
+	BTNode *path[N_Node];
+	int top = -1;
+	All_leaf_Path_Core(root, path, top);
+}
+
+weightBTNode* CreateWeightTree(const string &str) {//建一颗带权路径树，相当于把树的节点信息变为权值，其他不变
+	weightBTNode *p;
+	try
+	{
+		int i;
+		int num_node;
+		int tree_weight[N_Node];
+		int tree_order[N_Node];
+		p = (weightBTNode *)malloc(sizeof(weightBTNode));
+		p->lchild = p->rchild = NULL;
+
+		ifstream ins(str);
+		if (!ins) { throw exception(); }
+		ins >> num_node;//读第一行，代表节点个数
+		if (num_node < 1) { throw exception(); }
+
+		for (i = 1; i <= num_node; ++i) {//其余均是数据对（int，int），前者表示weight，
+			ins >> tree_weight[i];		 //后者表示其位置在完全二叉树中所对应的序号（根结点的序号为1）
+			ins >> tree_order[i];
+		}
+		for (i = 1; i <= num_node; ++i)//通过遍历找到第一个根结点，因为读入的时候可能不是按顺序读的
+		{
+			if (tree_order[i] == 1)		//根结点的序号为1
+			{
+				CreateWeightTree2(i, num_node, tree_weight, tree_order, p);
+			}
+		}
+	}
+	catch (...)//...表示捕获所有错误
+	{
+		printErrorAndExit("CreateTree");
+	}
+	return p;
+}
+void CreateWeightTree2(int root, int num_node, int tree_weight[N_Node], int tree_order[N_Node], weightBTNode *p) {
+	int i;					//递归创建树的节点
+							//	BTNode *lchild, *rchild;
+	p->weight = tree_weight[root];
+	for (i = 1; i <= num_node; ++i) {
+		if (tree_order[i] == tree_order[root] * 2) {
+			weightBTNode *lchild = (weightBTNode *)malloc(sizeof(weightBTNode));
+			p->lchild = lchild;
+			lchild->lchild = lchild->rchild = NULL;
+			CreateWeightTree2(i, num_node, tree_weight, tree_order, lchild);
+		}
+		else if (tree_order[i] == tree_order[root] * 2 + 1) {
+			weightBTNode *rchild = (weightBTNode *)malloc(sizeof(weightBTNode));
+			p->rchild = rchild;
+			rchild->lchild = rchild->rchild = NULL;
+			CreateWeightTree2(i, num_node, tree_weight, tree_order, rchild);
+		}
+	}
+}
+int WPL(weightBTNode *root) {//求带权路径和,其实完全没有必要写建带权树的代码，把ElemType的char改为int就可当weight了
+	return wpl_PreOrder(root, 0);//假设只有一个根节点，带权路径为0，虽然是叶节点，但是没有边
+}
+int wpl_PreOrder(weightBTNode *root, int deep) {
+
+	static int wpl = 0;	//法一：递归
+	if (root->lchild == NULL && root->rchild == NULL)
+		wpl += deep*root->weight;
+	if (root->lchild)
+		wpl_PreOrder(root->lchild, deep + 1);
+	if (root->rchild)
+		wpl_PreOrder(root->rchild, deep + 1);
+	return wpl;
+}
+int wpl_LevelOrder(weightBTNode *root) {
+	weightBTNode *p;	//求带权的路径的第二种方法：层次遍历
+	weightBTNode *queue[N_Node];
+	int rear = 0, front = 0;
+	int wpl = 0, deep = 0;//初始化wpl和深度
+	weightBTNode *lastNode;//记录当前层的最后一个节点
+	weightBTNode *newLastNode;//记录下一层的最后一个节点
+	lastNode = root;//初始化为根节点
+	newLastNode = NULL;//初始化为空
+	queue[++rear] = root;
+	while (rear != front) {
+		p = queue[++front];//出队
+		if (p->lchild == NULL && p->rchild == NULL)
+			wpl += deep*p->weight;
+		if (p->lchild) {
+			queue[++rear] = p->lchild;
+			newLastNode = p->lchild;//设下一层的最后一个节点为该节点的左节点
+		}
+		if (p->rchild) {
+			queue[++rear] = p->rchild;
+			newLastNode = p->rchild;//设下一层的最后一个节点为该节点的左节点
+		}
+		if (p == lastNode) {//若该节点为本层的最后一个节点，则更新lastNode
+			lastNode = newLastNode;
+			++deep;			//层数加1
+		}
+	}
+	return wpl;
 }
 
 //二叉排序树的一些操作
@@ -877,128 +1021,122 @@ BTNode* Number_K(BTNode *root, int k) {
 			return Number_K(root->rchild, k - (root->lchild->count + 1));
 	}
 }
-
-LinkedList head, p = NULL;
-LinkedList InOrderLeaf(BTNode *root) {//将二叉树的叶子用右指针串起来
+int Caculation_Core(int A, int B, char C) {
+	switch (C)
+	{
+	case '+':return A + B;
+	case '-':return A - B;
+	case '*':return A * B;
+	case '/':return A / B;
+	case '%':return A % B;
+	default:
+		cout << "文件格式不对，运算符有误！" << endl;
+		exit(1);
+	}
+}
+int Caculation(BTNode *root) {
+	//计算+、-、*、/、%
+	//root只含有度为2、0的结点，度为2的结点是上述5种运算符的字符，度为0的结点是数值0~9的字符
 	if (root) {
-		InOrderLeaf(root->lchild);
-		if (root->lchild == NULL && root->rchild == NULL) {
-			if (p == NULL) {
-				head = root;
-				p = root;
-			}
-			else {
-				p->rchild = root;
-				p = root;
-			}
+		int l_value, r_value;
+		if (root->lchild&&root->rchild) {
+			l_value = Caculation(root->lchild);
+			r_value = Caculation(root->rchild);
+			return Caculation_Core(l_value, r_value, root->data);
 		}
-		InOrderLeaf(root->rchild);
-		p->rchild = NULL;
+		else {
+			return root->data - '0';//字符转int
+		}
 	}
-	return head;
-
-}
-void PrintLeaf(BTNode *root) {
-	LinkedList pHead = InOrderLeaf(root);
-	while (pHead) {
-		cout << pHead->data << '\t';
-		pHead = pHead->rchild;
+	else {
+		return 0;
 	}
 }
 
-weightBTNode* CreateWeightTree(const string &str) {//建一颗带权路径树，相当于把树的节点信息变为权值，其他不变
-	weightBTNode *p;
-	try
-	{
-		int i;
-		int num_node;
-		int tree_weight[N_Node];
-		int tree_order[N_Node];
-		p = (weightBTNode *)malloc(sizeof(weightBTNode));
-		p->lchild = p->rchild = NULL;
-
-		ifstream ins(str);
-		if (!ins) { throw exception(); }
-		ins >> num_node;//读第一行，代表节点个数
-		if (num_node < 1) { throw exception(); }
-
-		for (i = 1; i <= num_node; ++i) {//其余均是数据对（int，int），前者表示weight，
-			ins >> tree_weight[i];		 //后者表示其位置在完全二叉树中所对应的序号（根结点的序号为1）
-			ins >> tree_order[i];
+//线索二叉树的操作，以后如果把二叉树线索化了，判断有没有左孩子就要用root->ltag==0,不能用root->lchild==NULL了，没有线索化的话就照常
+void InThread_Core(BTNode *root, BTNode *&pre) {
+	if (root) {
+		InThread_Core(root->lchild, pre);//递归，线索化左子树
+		if (!root->lchild) {			//左子树为空，建立前驱线索
+			root->lchild = pre;
+			root->ltag = 1;
 		}
-		for (i = 1; i <= num_node; ++i)//通过遍历找到第一个根结点，因为读入的时候可能不是按顺序读的
-		{
-			if (tree_order[i] == 1)		//根结点的序号为1
-			{
-				CreateWeightTree2(i, num_node, tree_weight, tree_order, p);
-			}
+		if (pre&&pre->rchild == NULL) {	//建立前驱节点的后继线索
+			pre->rchild = root;	
+			pre->rtag = 1;
 		}
+		pre = root;					//标记当前节点为刚刚访问过的节点
+		InThread_Core(root->rchild, pre);	//递归，线索化右子树
 	}
-	catch (...)//...表示捕获所有错误
-	{
-		printErrorAndExit("CreateTree");
+}
+void InThread(BTNode *root) {
+	//通过中序遍历线索化二叉树
+	if (root) {
+		BTNode *pre = NULL;		//前驱节点
+		InThread_Core(root, pre);
+		pre->rchild = NULL;
+		pre->rtag = 1;
 	}
+}
+BTNode *FirstNode(BTNode *p) {
+	//求中序线索二叉树中序序列下的第一个节点
+	while (p->ltag == 0)
+		p = p->lchild;
 	return p;
 }
-void CreateWeightTree2(int root, int num_node, int tree_weight[N_Node], int tree_order[N_Node], weightBTNode *p) {
-	int i;					//递归创建树的节点
-							//	BTNode *lchild, *rchild;
-	p->weight = tree_weight[root];
-	for (i = 1; i <= num_node; ++i) {
-		if (tree_order[i] == tree_order[root] * 2) {
-			weightBTNode *lchild = (weightBTNode *)malloc(sizeof(weightBTNode));
-			p->lchild = lchild;
-			lchild->lchild = lchild->rchild = NULL;
-			CreateWeightTree2(i, num_node, tree_weight, tree_order, lchild);
+BTNode *NextNode(BTNode *p) {
+	//求节点p中序序列的下一个节点
+	if (p->rtag == 0)
+		return FirstNode(p->rchild);	//右子树不为空，返回右子树最左下节点
+	else
+		return p->rchild;	//rtag=1，直接返回后继
+}
+void InOrder_Thread(BTNode *root) {
+	//中序遍历线索化后的二叉树
+	BTNode *p = FirstNode(root);
+	while (p) {
+		cout << p->data << '\t';
+		p=NextNode(p);
+	}
+	cout << endl;
+}
+void PreThread_Core(BTNode *root, BTNode *&pre) {
+	if (root) {
+		if (!root->lchild) {	//没有左孩子
+			root->lchild = pre;
+			root->ltag = 1;
 		}
-		else if (tree_order[i] == tree_order[root] * 2 + 1) {
-			weightBTNode *rchild = (weightBTNode *)malloc(sizeof(weightBTNode));
-			p->rchild = rchild;
-			rchild->lchild = rchild->rchild = NULL;
-			CreateWeightTree2(i, num_node, tree_weight, tree_order, rchild);
+		if (pre && !pre->rchild) {
+			pre->rchild = root;
+			pre->rtag = 1;
 		}
+		pre = root;
+		if(root->ltag==0)		//这里一定要有判断，不然就死循环了，
+			PreThread_Core(root->lchild, pre);
+		if(root->rtag==0)
+			PreThread_Core(root->rchild, pre);
 	}
 }
-int WPL(weightBTNode *root) {//求带权路径和,其实完全没有必要写建带权树的代码，把ElemType的char改为int就可当weight了
-	return wpl_PreOrder(root, 0);//假设只有一个根节点，带权路径为0，虽然是叶节点，但是没有边
-}
-int wpl_PreOrder(weightBTNode *root, int deep) {
-
-	static int wpl = 0;	//法一：递归
-	if (root->lchild == NULL && root->rchild == NULL)
-		wpl += deep*root->weight;
-	if (root->lchild)
-		wpl_PreOrder(root->lchild, deep + 1);
-	if (root->rchild)
-		wpl_PreOrder(root->rchild, deep + 1);
-	return wpl;
-}
-int wpl_LevelOrder(weightBTNode *root) {
-	weightBTNode *p;	//求带权的路径的第二种方法：层次遍历
-	weightBTNode *queue[N_Node];
-	int rear = 0, front = 0;
-	int wpl = 0, deep = 0;//初始化wpl和深度
-	weightBTNode *lastNode;//记录当前层的最后一个节点
-	weightBTNode *newLastNode;//记录下一层的最后一个节点
-	lastNode = root;//初始化为根节点
-	newLastNode = NULL;//初始化为空
-	queue[++rear] = root;
-	while (rear != front) {
-		p = queue[++front];//出队
-		if (p->lchild == NULL && p->rchild == NULL)
-			wpl += deep*p->weight;
-		if (p->lchild) {
-			queue[++rear] = p->lchild;
-			newLastNode = p->lchild;//设下一层的最后一个节点为该节点的左节点
-		}
-		if (p->rchild) {
-			queue[++rear] = p->rchild;
-			newLastNode = p->rchild;//设下一层的最后一个节点为该节点的左节点
-		}
-		if (p == lastNode) {//若该节点为本层的最后一个节点，则更新lastNode
-			lastNode = newLastNode;
-			++deep;			//层数加1
-		}
+void PreThread(BTNode *root) {
+	//通过先序遍历线索化二叉树
+	if (root) {
+		BTNode *pre = NULL;
+		PreThread_Core(root, pre);
+		pre->rchild = NULL;
+		pre->rtag = 1;
 	}
-	return wpl;
+}
+void PreOrder_Thread(BTNode *root) {
+	//先序遍历线索化后的二叉树
+	if (root) {
+		BTNode *p = root;
+		while (p) {
+			while (p->ltag == 0) {
+				cout << p->data << '\t';
+				p = p->lchild;				//边访问边移动
+			}
+			cout << p->data << '\t';	//当p->ltag=1时已经跳出循环了，所以还要访问它
+			p = p->rchild;	//若p有右孩子，则指向右孩子，若p没有右孩子，则指向其后继
+		}
+		}
 }
