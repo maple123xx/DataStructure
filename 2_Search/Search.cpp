@@ -131,6 +131,62 @@ bool Search_Hash(HashTable H, ValueType key, int &addr) {
 	return true;
 }
 
+void Init_HashLinked(HashTableLinked *&H, int size) {//散列表的拉链法
+	H->size = size;
+	H->key = (Node *)malloc(size * sizeof(Node));
+	for (int i = 0; i < H->size; ++i) {	//初始化拉链
+		H->key[i].data = i;
+		H->key[i].next = NULL;
+	}
+}
+int HashLinked(HashTableLinked *H, ValueType value) {	//求散列地址
+	return value%H->size;
+}
+void  Insert_HashLinked(HashTableLinked *&H, const string &str) {
+	try {
+		int i, addr, num_data;//num_data是关键值个数
+		ValueType value;
+		ifstream ins(str);
+		if (!ins) { throw exception(); }
+		ins >> num_data;
+		if (num_data < 1) { throw exception(); }
+		for (i = 1; i <= num_data; ++i) {
+			ins >> value;
+			addr = HashLinked(H, value);			//求散列地址
+			Node *p = (Node *)malloc(sizeof(Node));
+			p->data = value;
+			p->next = H->key[addr].next;	//头插法
+			H->key[addr].next = p;
+		}
+	}
+	catch (...) {
+		printErrorAndExit("Insert_HashLinked");
+	}
+}
+void Print_HashLinked(HashTableLinked *H) {
+	for (int i = 0; i < H->size; ++i) {
+		cout << "地址" << i << "   ";
+		Node *p = H->key[i].next;
+		while (p) {
+			cout << p->data << "  ";
+			p = p->next;
+		}
+		cout << endl;
+	}
+}
+bool Search_HashLinked(HashTableLinked *H, ValueType value, int &addr) {
+	//查找
+	addr = HashLinked(H, value);
+	Node *p = H->key[addr].next;
+	while (p) {
+		if (p->data == value) {
+			return true;
+		}
+		p = p->next;
+	}
+	return false;
+}
+
 //生成斐波那契数列，数列的最后一个元素大于或者等于n
 int Fibonacci(int A[], int n)
 {
@@ -179,3 +235,4 @@ int Fibonacci_search(ValueType A[], int n, ValueType key)
 	return 0;
 
 }
+
