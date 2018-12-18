@@ -5,8 +5,8 @@ int main() {
 	BTNode *p = CreateTree(str);
 	const string str1 = "data\\tree_1.txt";
 	BTNode *p1 = CreateTree(str1);
-	DeleteLeaf(p1);
-	PreOrder(p1);
+	//DeleteLeaf(p1);
+	//PreOrder(p1);
 	//All_leaf_Path(p1);
 	//PreThread(p1);
 	//PreOrder_Thread(p1);
@@ -15,11 +15,17 @@ int main() {
 	/*BTNode *p3 = NextNode(p1);
 	cout << "中序下一个节点为："<<p3->data << endl;
 	InOrder_Thread(p1);*/
-	//BTNode *root;
+	BTNode *root;
 	//BTNode *parent=NULL,*p;
 	//ElemType A[] = { 40,72,38,35,67,51,90,8,55,21};
-	//ElemType A[] = { 10,5,12,3,7,4 };
-	//Create_BST(root, A, 10);
+	ElemType A[] = { 10,5,12,3,7,4 };
+	//ElemType A[] = { 40,72,67,90 };
+	Create_BST(root, A, 6);
+	PreOrder(root);
+	cout << endl;
+	SwapTree(root);
+	InOrder(root);
+	//Print_Road(root, 22);
 	/*if (SearchBST2(root, 4, parent, p)) {
 		cout << p->data << endl;
 	}

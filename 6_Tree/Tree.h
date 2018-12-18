@@ -2,7 +2,7 @@
 #define Tree_
 
 #include"myNamespace.h"
-typedef char ElemType;
+typedef int ElemType;
 typedef struct BTNode {
 	ElemType data;
 	int ltag, rtag;		//ltag为0指向左孩子，为1指向前驱；rtag为0指向右孩子，为1代表指向后继

@@ -87,5 +87,10 @@ bool Exist_Path_DFS(AGraph *agraph, int i, int j, bool visited[]);
 bool Exist_Path_DFS2(AGraph *agraph, int i, int j);
 bool Exist_Path_BFS(AGraph *agraph, int i, int j, bool have_visited[]);
 void Path_U_V(AGraph *agraph, int u, int v, int path[], int paths[][N_list], int &pathnum, int &d, bool visited[]);
+bool Adjacent(AGraph *agraph, int x, int y);
+void Neighbors(AGraph *agraph, int x);
+void InsertVertex(AGraph *&agraph, int x);
+void DeleteVertex(AGraph *&agraph, int x);
+void RemoveEdge(AGraph *&agraph, int x, int y);
 
 #endif // !graph_

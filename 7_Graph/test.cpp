@@ -1,16 +1,25 @@
 #include"Graph.h"
 
 int main() {
-	const string str = "data\\MGraph_05_3.txt";
-	MGraph *mgraph = (MGraph *)malloc(sizeof(MGraph));
-	Create_MGraph(mgraph, str);
-	Print_MGraph_Matrix(mgraph);
-	cout << endl;
-	const string str1 = "data\\AGraph_05_4.txt";
+	//const string str = "data\\MGraph_05_3.txt";
+	//MGraph *mgraph = (MGraph *)malloc(sizeof(MGraph));
+	//Create_MGraph(mgraph, str);
+	//Print_MGraph_Matrix(mgraph);
+	//cout << endl;
+	const string str1 = "data\\AGraph_05.txt";
 	AGraph *agraph = (AGraph *)malloc(sizeof(AGraph));
 	Create_AGraph(agraph, str1);
 	Print_AGraph_Matrix(agraph);
-	Top_Sort_DFS(agraph);
+	//InsertVertex(agraph, 6);
+	//DeleteVertex(agraph, 4);
+	RemoveEdge(agraph, 4, 5);
+	Print_AGraph_Matrix(agraph);
+	/*if (Adjacent(agraph, 1, 5))
+		cout << "сп╠ъ" << endl;
+	else
+		cout << "нч╠ъ" << endl;
+	Neighbors(agraph, 4);*/
+	//Top_Sort_DFS(agraph);
 	//int path[N_list] = { 0 };
 	//int paths[N_list][N_list] = { 0 };
 	//int pathnum = 0;

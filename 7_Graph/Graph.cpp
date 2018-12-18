@@ -836,5 +836,146 @@ void Path_U_V(AGraph *agraph, int u, int v, int path[], int paths[][N_list], int
 	visited[u] = false;	//回退，使得下次还可能访问到它
 	--d;	//回退
 }
+bool Adjacent(AGraph *agraph, int x, int y) {
+	//判断图中是否有边（x,y）,只需判断(x,y)，就算在在无向图中也不用判断(y,x)，因为（x，y）都没有，怎么会有（y,x）
+	Arc *p = agraph->adjlist[x].first;
+	while (p&&p->adjvex.no!=y) {
+		p = p->next;
+	}
+	if (p)
+		return true;
+	return false;
+}
+void Neighbors(AGraph *agraph, int x) {
+	//列出所有与顶点x邻接的边
+	Arc *p = agraph->adjlist[x].first;
+	while (p) {
+		cout << p->adjvex.no << '\t';
+		p = p->next;
+	}
+	cout << endl;
+}
+void InsertVertex(AGraph *&agraph, int x) {
+	//插入节点6，以及边（6，1，2），（6，2，3），（3，6，4），最后面的是权值
+	Arc *p;
+	++agraph->num_node;
+	agraph->num_edge += 3;
+	agraph->adjlist[x].ver_head.no = x;
+	agraph->adjlist[x].ver_head.info = 'F';
+	agraph->adjlist[x].first = NULL;
 
+	p = (Arc *)malloc(sizeof(Arc));
+	p->adjvex = agraph->adjlist[1].ver_head;
+	p->weight = 2;
+	p->next = agraph->adjlist[x].first;
+	agraph->adjlist[x].first = p;
+
+	p = (Arc *)malloc(sizeof(Arc));
+	p->adjvex = agraph->adjlist[2].ver_head;
+	p->weight = 3;
+	p->next = agraph->adjlist[x].first;
+	agraph->adjlist[x].first = p;
+
+	p = (Arc *)malloc(sizeof(Arc));
+	p->adjvex = agraph->adjlist[6].ver_head;
+	p->weight = 4;
+	p->next = agraph->adjlist[3].first;
+	agraph->adjlist[3].first = p;
+}
+void DeleteVertex(AGraph *&agraph, int x) {
+	//从图中删除顶点x及其相关的边
+	int i;
+	Arc *p = agraph->adjlist[x].first;
+	while (p) {	//删除从x出发的边
+		Arc *q = p->next;
+		free(p);
+		--agraph->num_edge;
+		if (!q) {
+			p = NULL;
+			break;
+		}
+		p = q;
+	}
+	agraph->adjlist[x].first = NULL;
+	for (i = 1; i <= agraph->num_node; ++i) {	//输出
+		if (i == x)
+			continue;
+		cout << agraph->adjlist[i].ver_head.info << " 编号为：" << agraph->adjlist[i].ver_head.no << '\t';
+	}
+	for (i = 1; i <= agraph->num_node; ++i) {
+		if (i == x)
+			continue;
+		Arc *p= agraph->adjlist[i].first;
+		while (p) {
+			if (p->adjvex.no == x) {
+				if (p == agraph->adjlist[i].first) {	//p是第一条边
+					agraph->adjlist[i].first = agraph->adjlist[i].first->next;
+					free(p);
+					p = NULL;
+				}
+				else {
+					Arc *q = agraph->adjlist[i].first;
+					while (q->next != p) {
+						q = q->next;
+					}
+					q->next = p->next;
+					free(p);
+					p = NULL;
+				}
+				--agraph->num_edge;
+			}
+			if(p)
+				p = p->next;
+		}
+	}
+	cout << endl << "图中的弧（边）共有" << agraph->num_edge << "条，具体信息如下：" << endl;
+	for (i = 1; i <= agraph->num_node; ++i) {
+		p = agraph->adjlist[i].first;
+		while (p) {
+			cout << "(" << i << "," << p->adjvex.no << ":" << p->weight << ")" << '\t';
+			p = p->next;
+		}
+		cout << "结束" << endl;
+	}
+}
+void RemoveEdge(AGraph *&agraph, int x, int y) {
+	//删除边（x,y）,若是无向图的话，还要删除（y,x）
+	Arc *p = agraph->adjlist[x].first;
+	while (p&&p->adjvex.no != y) {
+		p = p->next;
+	}
+	if (p == agraph->adjlist[x].first) {	//p是第一个顶点
+		agraph->adjlist[x].first = agraph->adjlist[x].first->next;
+		free(p);
+		p = NULL;
+	}
+	else{
+		Arc *q = agraph->adjlist[x].first;
+		while (q->next != p) {
+			q = q->next;
+		}
+		q->next = p->next;
+		free(p);
+	}
+	--agraph->num_edge;
+	//反着来一遍
+	p = agraph->adjlist[y].first;
+	while (p&&p->adjvex.no != x) {
+		p = p->next;
+	}
+	if (p == agraph->adjlist[y].first) {	//p是第一个顶点
+		agraph->adjlist[y].first = agraph->adjlist[y].first->next;
+		free(p);
+		p = NULL;
+	}
+	else {
+		Arc *q = agraph->adjlist[y].first;
+		while (q->next != p) {
+			q = q->next;
+		}
+		q->next = p->next;
+		free(p);
+	}
+	--agraph->num_edge;
+}
 

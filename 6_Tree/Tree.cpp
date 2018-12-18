@@ -172,38 +172,56 @@ void PreOrder2(BTNode *root) {	//先序遍历的非递归版本
 		}
 	}
 }
+int sum = 0;
+int stack[N_Node];
+int top = -1;
 void Print_Road(BTNode *root, int x) {
 	//从根开始往下访问一直到叶节点，所经过的所有节点形成一条路径
 	//输出所有和x相等的路径
-	BTNode *p = root;
-	BTNode *stack[N_Node];
-	int top = -1;
-	int SumStack[N_Node];//用来保存当前已入栈的元素值和
-	int top1 = -1,i,sum=0;
-	while (top != -1 || p) {
-		if (p) {
-			stack[++top] = p;
-			SumStack[++top1] = p->data;
-			sum += SumStack[top1];
-			p = p->lchild;
-		}
-		else {
-			p = stack[top--];
-			p = p->rchild;
-			if (!p) {
-				if (sum == x) {
-					cout << "路径为：" << endl;
-					for (i = 0; i <= top1; ++i) {
-						cout << SumStack[i] << '\t';
-					}
-					cout << endl;
-				}
-				while (top1 != top) {	//将top1回退到top位置
-					sum -= SumStack[top1--];
-				}
+	if (root) {				//递归的方法
+		sum += root->data;
+		stack[++top] = root->data;
+		if (!root->lchild && !root->rchild&&sum==x) {
+			for (int i = 0; i <= top; ++i) {
+				cout << stack[i] << '\t';
 			}
+			cout << endl;
 		}
+		Print_Road(root->lchild, x);
+		Print_Road(root->rchild, x);
+		sum -= stack[top--];
 	}
+	//bool flag = false;		//非递归的方法
+	//BTNode *p = root;
+	//BTNode *stack[N_Node];
+	//int top = -1;
+	//BTNode *SumStack[N_Node];//用来保存当前已入栈的元素值和
+	//int top1 = -1,i,sum=0;
+	//while (top != -1 || p) {
+	//	if (p) {
+	//		stack[++top] = p;
+	//		SumStack[++top1] = p;
+	//		sum += SumStack[top1]->data;
+	//		p = p->lchild;
+	//	}
+	//	else {
+	//		p = stack[top--];
+	//		flag = p->lchild == NULL ? true : false;
+	//		p = p->rchild;			
+	//		if (!p) {
+	//			if (sum == x&&flag) {
+	//				cout << "路径为：" << endl;
+	//				for (i = 0; i <= top1; ++i) {
+	//					cout << SumStack[i]->data << '\t';
+	//				}
+	//				cout << endl;
+	//			}
+	//			while (SumStack[top1]!=stack[top]) {	//保持栈顶指针指向的元素是一样的
+	//				sum -= SumStack[top1--]->data;
+	//			}
+	//		}
+	//	}
+	//}
 }
 void InOrder2(BTNode *root) {	//中序遍历的非递归版本
 	BTNode *p=root;
@@ -377,8 +395,10 @@ int SingleSonNodes(BTNode *root) {
 }
 void SwapTree(BTNode *root) {	//交换二叉树的左右子树
 	if (root) {
-		SwapTree(root->lchild);
-		SwapTree(root->rchild);
+		if(root->lchild)
+			SwapTree(root->lchild);
+		if(root->rchild)
+			SwapTree(root->rchild);
 		swap(root->lchild, root->rchild);
 	}
 }
