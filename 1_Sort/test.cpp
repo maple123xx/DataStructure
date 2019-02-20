@@ -57,7 +57,7 @@ int K_Element(int A[], int low, int high, int k) {
 	else if (low > k)
 		return K_Element(A, i, low - 1, k);
 	else
-		return K_Element(A, low + 1, j, k);//右半部分，是k-low,相对位置
+		return K_Element(A, low + 1, j, k);
 }
 int setPartition(int A[], int n) {
 	//尽可能的将数组分成两部分，两部分的元素值和的差尽可能大
@@ -135,7 +135,7 @@ int main() {
 	clock_t finish;
 	start = clock();
 	int i, n = 9;
-	int A[] = { -3, 3, 542, 748, -6, 214, -5, 63, 616 };
+	int A[] = { 72, 3, 542, 748, -6, 214, -5, 63, 1000 };
 	//RadixSort(A, n);
 	/*int A[N_array] = { 45,21,35,23,4,56,15,32,11,6,100,79,1};
 	int B[N_array];
@@ -148,7 +148,7 @@ int main() {
 	/*int A[N_array] = { 1,2,3,4,5,6,7};
 	if (Judge_Heap(A, 6))
 		cout << "是小根堆" << endl;*/
-	//Heap_sort(A, 11);	//堆排序从第一个元素开始
+	Heap_sort(A, 8);	//堆排序从第一个元素开始
 	/*Insert_Heap(A, 70, n);
 	for (int j = n+1; j > 1; --j) {
 		swap(A[j], A[1]);
@@ -160,11 +160,11 @@ int main() {
 	//Select_sort(A, n);
 	//Insert_direct_sort(A, n);
 	//Shell_sort(A, n);
-	//Bubble_sort3(A, n);
+	//Bubble_sort2(A, n);
 	//Quick_sort2(A, 0, n - 1);
 	//Merge_sort(A, 0, n - 1);
 	//Bi_Insert_Sort(A, 12);
-	MoveEven_Odd2(A, n);
+	//MoveEven_Odd2(A, n);
 	//cout << setPartition(A, 12) << endl;
 	for (i = 0; i < n; i++) {
 		cout << A[i] << "\t";

@@ -61,11 +61,11 @@ void Shell_sort(int A[], int n) {
 	/*do {
 	increment = increment / 3 + 1;
 	for (i = increment; i < n; ++i) {
-	temp = A[i];
-	for (j = i; j >= increment && A[j - increment]>temp; j -= increment) {	//这里的判断条件和直接插入排序有点区别，是>=,不然一次循环也进不去
-	A[j] = A[j - increment];
-	}
-	A[j] = temp;
+		temp = A[i];
+		for (j = i; j >= increment && A[j - increment]>temp; j -= increment) {	//这里的判断条件和直接插入排序有点区别，是>=,不然一次循环也进不去
+			A[j] = A[j - increment];
+		}
+		A[j] = temp;
 	}
 	} while (increment > 1);*/
 	do {	//与直接插入排序一样，希尔排序也有两种排序方法
@@ -93,7 +93,7 @@ void Bubble_sort(int A[], int n) {
 }
 //改进的冒泡排序
 void Bubble_sort2(int A[], int n) {
-	for (int i = 0; i < n - 2; ++i) {
+	for (int i = 0; i < n - 1; ++i) {
 		bool flag = false;	//发生交换的标志，若一趟下来没有交换，说明已经排好了
 		for (int j = n - 1; j > i; --j) {
 			if (A[j] < A[j - 1]) {
@@ -135,7 +135,7 @@ void Quick_sort(int A[], int low,int high) {
 	while (i != j) {
 		while (temp <= A[j] && i < j)//从右往左，找到第一个小于基准的数的位置j（必须要先从右往左,因为基准设为最左边，如果i先往右走，可能会挡住j
 									//（有i<j这个条件束缚着），使得j没有到达应该到的位置（第一个小于temp的位置）。
-									//所以需要j先从右往左走，来控制i）
+									//所以需要j先从右往左走，来控制i
 			--j;					
 		while (temp >= A[i] && i < j)//从左往右，找到第一个大于基准的数的位置i
 			++i;
@@ -181,7 +181,7 @@ void Select_sort(int A[], int n) {
 //堆排序（升序排序要建大顶堆）
 //1. 从第最后一个非叶节点（A[n/2]）开始，逐渐往上到根建立大顶堆
 //2. 交换堆顶元素和最末尾元素，调整堆
-//元素从第一个开始
+//元素从第一个开始(数组的第0个元素没有参加排序)
 void Heap_sort(int A[], int n) {
 	for (int i = n / 2; i >= 1; --i) {//从第最后一个非叶节点（A[n/2]）开始，逐渐往上到根，完成后这棵树就是一个大顶堆了
 		AdjustHeap(A, i, n);
@@ -189,21 +189,21 @@ void Heap_sort(int A[], int n) {
 	for (int j = n; j > 1; --j) {
 		swap(A[j], A[1]);//交换堆顶元素和最末尾元素
 		AdjustHeap(A, 1, j-1);//这里A[0]为当前需要调整的节点,因为建好大顶堆后，交换堆顶元素和最末尾元素，只破坏0位置的堆性质，所以从这里开始调整
-							//这里是j，不是j-1
+							//这里是j-1，不是j，最后一个已经排好，就不要动了
 	}
 }
 //调整堆
 void AdjustHeap(int A[], int i, int n) {//
 	int k=2*i;//i表示当前要调整的节点，k是当前节点的左孩子
 	int temp = A[i];//先保存起当前的值
-	while (k < n) {
+	while (k <= n) {
 		if (k + 1 <= n && A[k] < A[k + 1]) {//左孩子<右孩子
 			k = k + 1;
 		}
 		if (A[k] > temp) {
 			A[i] = A[k];//不要怕覆盖A[i]，它的值已经保存在temp里了
 			//swap(A[i], A[k]);//也可以立即交换A[i]和A[k]的值，最后就不需要A[i] = temp;这条语句了
-			i = k;
+			i = k;	//往下走，每一次把该节点调成大顶的就行了
 			k = 2 * i;
 		}
 		else

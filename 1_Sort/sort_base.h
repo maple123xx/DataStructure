@@ -5,13 +5,12 @@
 #define N_array 100
 using namespace std;
 //void swap(int &a, int &b);
-//≤Â»Î≈≈–Ú
 
 typedef struct List {
 	int data;
 	int count;
 }List;
-
+//≤Â»Î≈≈–Ú
 void Insert_direct_sort(int A[], int n);
 void Bi_Insert_Sort(int A[], int n);
 void Shell_sort(int A[], int n);
