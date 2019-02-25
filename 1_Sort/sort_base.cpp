@@ -229,7 +229,7 @@ void Insert_Heap(int A[], int key, int n) {
 		n = i;
 		i = n / 2;
 	}
-	A[n] = key;
+	A[n] = temp;
 }
 bool Judge_Heap(int A[], int n) {
 	int i;

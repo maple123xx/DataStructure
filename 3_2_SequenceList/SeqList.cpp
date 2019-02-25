@@ -102,7 +102,8 @@ void ReverseList(PSeqList s) {//½«Ë³Ğò±íµÄËùÓĞÔªËØÄæÖÃ£¬ÒªÇó¿Õ¼ä¸´ÔÓ¶ÈÎªO(1)
 		swap(s->data[i], s->data[j]);
 	}
 }
-void DeleteX(PSeqList s,int x) {//É¾³ıË³Ğò±íÖĞËùÓĞÖµÎªxµÄÔªËØ
+void DeleteX(PSeqList s,int x) {
+	//É¾³ıË³Ğò±íÖĞËùÓĞÖµÎªxµÄÔªËØ
 	//for (int i = 0; i < s->length; ) {//·½·¨Ò»£ºÓÃÄ©Î²ÔªËØÌæ´úx£¬Õâ¸ö·½·¨»á¸Ä±äÔªËØµÄÏà¶ÔÎ»ÖÃ
 	//	if (s->data[i] == x) {
 	//		s->data[i] = s->data[s->length - 1];
@@ -122,7 +123,8 @@ void DeleteX(PSeqList s,int x) {//É¾³ıË³Ğò±íÖĞËùÓĞÖµÎªxµÄÔªËØ
 	}
 	s->length = k;
 }
-void Delete_p_q(PSeqList s, int p, int q) {//É¾³ıÓĞĞò±íÖĞÖµÎªp,q(p<q)Ö®¼äµÄÔªËØ£¬ÒòÎªÊÇÓĞĞò£¬ËùÒÔp,qÖ®¼äµÄÔªËØÁ¬Ğø
+void Delete_p_q(PSeqList s, int p, int q) {
+	//É¾³ıÓĞĞò±íÖĞÖµÎªp,q(p<q)Ö®¼äµÄÔªËØ£¬ÒòÎªÊÇÓĞĞò£¬ËùÒÔp,qÖ®¼äµÄÔªËØÁ¬Ğø
 	int i, j;
 	for (i = 0; i < s->length && s->data[i] < p; ++i);//ÕÒµ½µÚÒ»¸ö´óÓÚµÈÓÚpµÄÊı
 	if (i >= s->length)
@@ -133,7 +135,8 @@ void Delete_p_q(PSeqList s, int p, int q) {//É¾³ıÓĞĞò±íÖĞÖµÎªp,q(p<q)Ö®¼äµÄÔªËØ£
 	}
 	s->length = i;
 }
-void Delete_p_q2(PSeqList s, int p, int q) {//É¾³ıË³Ğò±í£¨²»ÊÇÓĞĞòµÄ£©ÖĞÖµÎªp,q(p<q)Ö®¼äµÄÔªËØ
+void Delete_p_q2(PSeqList s, int p, int q) {
+	//É¾³ıË³Ğò±í£¨²»ÊÇÓĞĞòµÄ£©ÖĞÖµÎªp,q(p<q)Ö®¼äµÄÔªËØ
 	int k = 0;//k¼ÇÂ¼ÔªËØÖµÔÚp,qÖ®¼äÔªËØµÄ¸öÊı
 	for (int i = 0; i < s->length; ++i) {
 		if (s->data[i] >= p && s->data[i] <= q) 
@@ -143,7 +146,8 @@ void Delete_p_q2(PSeqList s, int p, int q) {//É¾³ıË³Ğò±í£¨²»ÊÇÓĞĞòµÄ£©ÖĞÖµÎªp,q(
 	}
 	s->length -= k;
 }
-void DeleteRepeat(PSeqList s) {//É¾³ıÓĞĞò±íµÄÈ«²¿ÖØ¸´ÔªËØ£¬Ê¹±íÖĞËùÓĞÔªËØ²»Í¬
+void DeleteRepeat(PSeqList s) {
+	//É¾³ıÓĞĞò±íµÄÈ«²¿ÖØ¸´ÔªËØ£¬Ê¹±íÖĞËùÓĞÔªËØ²»Í¬
 	int i, j;//iÖ¸ÏòµÚÒ»¸ö²»ÖØ¸´µÄÔªËØ£¬j¹¤×÷Ö¸Õë
 	for (i = 0, j = 1; j < s->length;++j) {//Ê¹ÓÃÖ±½Ó²åÈëµÄ·½·¨£¬³õÊ¼Ê±½«µÚÒ»¸öÔªËØ¿´³ö·ÇÖØ¸´µÄÓĞĞò±í£¬Ö®ºóÒÀ´ÎÅĞ¶Ï
 		if (s->data[i] != s->data[j])	   //ºóÃæµÄÔªËØÊÇ·ñÓëÇ°Ãæ·ÇÖØ¸´µÄÓĞĞò±íÏàÍ¬£¬Èç¹ûÏàÍ¬¼ÌĞøÏòºóÅĞ¶Ï£¬²»Í¬¾Í²åÈë
@@ -195,27 +199,24 @@ void FindX(PSeqList s,int x) {//²éÕÒÓĞĞò±íÊÇ·ñÓĞx,ÓĞµÄ»°ÓëÆäºóÔªËØ½»»»£¬Ã»ÓĞµÄ»°
 	}
 
 }
-int M_Search(int a[], int b[], int n) {//Á½¸öÉıĞòÊı×é£¬ºÏ²¢ºó·µ»Ø
+int M_Search(int a[], int b[], int n) {//Á½¸öÉıĞòÊı×é£¬ºÏ²¢ºó·µ»ØÆäÖĞÎ»Êı
 	int s1 = 0, d1 = n - 1, m1, s2 = 0, d2 = n - 1, m2;
 	while (s1 != d1 || s2 != d2) {
 		m1 = (s1 + d1) / 2;
 		m2 = (s2 + d2) / 2;
 		if (a[m1] == b[m2])
 			return a[m1];
-		else if (a[m1] < b[m2]) {
+		else if (a[m1] < b[m2]) {//ÉáÆúaÖĞĞ¡µÄÒ»°ë£¬ÉáÆúbÖĞ´óµÄÒ»°ë
 			if ((s1+d1) % 2 == 0) {//ÔªËØ¸öÊıÎªÆæÊı
 				s1 = m1;
-				d2 = m2;
-				
+				d2 = m2;		
 			}
-			else
-			{
+			else{
 				s1 = m1 + 1;
 				d2 = m2;
 			}
 		}
-		else
-		{
+		else{
 			if ((s2+d2) % 2 == 0) {//ÔªËØ¸öÊıÎªÆæÊı
 				d1 = m1;
 				s2 = m2;
