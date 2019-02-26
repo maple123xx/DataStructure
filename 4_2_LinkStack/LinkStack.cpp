@@ -6,7 +6,7 @@ typedef struct NODE {
 	struct NODE *next;
 }Node;
 typedef struct stack {
-	Node *top;	//栈顶指针
+	Node *top;	//栈顶指针，只是一个指针
 }LinkStack;
 
 LinkStack* CreateStack() {

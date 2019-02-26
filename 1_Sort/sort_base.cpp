@@ -271,17 +271,14 @@ void Merge(int A[],int low, int mid, int high) {
 		if (B[i] < B[j]) {
 			A[k++] = B[i++];
 		}
-		else
-		{
+		else{
 			A[k++] = B[j++];
 		}
 	}
-	while (i<=mid)
-	{
+	while (i<=mid){
 		A[k++] = B[i++];
 	}
-	while (j<=high)
-	{
+	while (j<=high){
 		A[k++] = B[j++];
 	}
 }

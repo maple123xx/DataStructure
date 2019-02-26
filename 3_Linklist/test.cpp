@@ -477,8 +477,6 @@ void Find_Common(PNODE A, PNODE B) {//找寻两个链表的公共起点
 		pb = pb->next;
 	}
 	cout << pa->data << endl;
-
-
 }
 void Delete_Absolute(PNODE pHead) {//单链表的所有数的绝对值都小于100，仅保留第一次出现的值，删除绝对值重复的值
 
@@ -643,10 +641,8 @@ void CreateList4_1(DPNODE pHead) {//头插创建带头循环双链表
 		cin >> x;
 	}
 }
-void CreateList4_2(const string &str,DPNODE pHead)
-{	//尾插创建带头循环双链表
-	try
-	{
+void CreateList4_2(const string &str,DPNODE pHead){	//尾插创建带头循环双链表
+	try{
 		DPNODE p;
 		DPNODE r = pHead->prior;
 		ifstream ins(str);
@@ -668,8 +664,7 @@ void CreateList4_2(const string &str,DPNODE pHead)
 			r = p;
 		}
 	}
-	catch (...)
-	{
+	catch (...){
 		printErrorAndExit("CreateList4_2");
 	}
 }
@@ -700,7 +695,7 @@ void Symmetry(DPNODE pHead) {//判断循环双链表是否是对称的
 	return;
 }
 
-void InitList5(DPNODE pHead) {
+void InitList5(DPNODE pHead) {	//带头节点循环双链表的初始化
 	pHead->next = NULL;
 	pHead->prior = NULL;
 	cout << "双链表初始化成功" << endl;

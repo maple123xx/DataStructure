@@ -217,13 +217,11 @@ double func(int n, int x) {//利用栈实现递归函数的非递归版本
 	}Stack[100];
 	int top = -1, i;
 	double fv1 = 1, fv2 = 2 * x;
-	for (i = n; i >= 2; --i) {
+	for (i = n; i >= 2; --i){
 		++top;
 		Stack[top].no = i;
-
 	}
-	while (top>=0)
-	{
+	while (top>=0){
 		Stack[top].value = 2 * x*fv2 - 2 * (Stack[top].no - 1)*fv1;
 		fv1 = fv2;
 		fv2 = Stack[top].value;
